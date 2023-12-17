@@ -1,0 +1,41 @@
+/* THEME */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #fff;
+    --bg: hsl(0, 0%, 9%);
+    --elem-bg: hsl(240, 3.7%, 15.9%);
+    --btn-bg: hsl(240, 5.3%, 26.1%);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --text: #000;
+    --bg: hsl(210, 40%, 98%);
+    --elem-bg: hsl(216, 12.2%, 83.9%);
+    --btn-bg: hsl(210, 4%, 80%);
+  }
+}
+
+
+body {
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+
+button {
+  color: var(--text);
+  background-color: var(--btn-bg);
+  border-color: transparent;
+  border-radius: 7px;
+}
+
+button:active {
+  background-color: hsl(198, 93.2%, 59.6%);
+}
+
+
+img {
+  vertical-align: middle;
+}

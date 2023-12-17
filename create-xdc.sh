@@ -2,6 +2,9 @@
 
 PACKAGE_NAME="Sharer"
 
+rm "$PACKAGE_NAME.xdc"
+rm "$PACKAGE_NAME-dev.xdc"
+
 cp -r module dist
 
 cd dist
