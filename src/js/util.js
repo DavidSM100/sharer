@@ -1,7 +1,11 @@
+import * as localforage from "localforage";
+import * as jszip from "jszip";
+
+
 export function toggle_classes(elems, classes) {
-  elems.forEach(function(elem) {
-    classes.forEach(function(class_name) {
-    elem.classList.toggle(class_name);
+  elems.forEach(function (elem) {
+    classes.forEach(function (class_name) {
+      elem.classList.toggle(class_name);
     });
   });
 }
