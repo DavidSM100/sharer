@@ -24,7 +24,7 @@ body {
 }
 
 
-button {
+button, input, select {
   color: var(--text);
   background-color: var(--btn-bg);
   border-color: transparent;
@@ -38,4 +38,19 @@ button:active {
 
 img {
   vertical-align: middle;
+}
+
+
+hr {
+  border-color: purple;
+}
+
+
+input, select {
+  outline: none;
+  text-align: center;
+}
+
+input {
+  caret-color: purple;
 }

@@ -24,14 +24,16 @@
 <body>
   
   <div id="homeDiv">
+    
+    <!-- Switch between receive and send divs -->
     <div align="middle">
       
-      <button class="active" id="showReceive">
+      <button class="active" id="show_receive">
         <img src="src/img/in.svg">
         Receive
       </button>
       
-      <button class="no_active" id="showSend">
+      <button class="no_active" id="show_send">
         <img src="src/img/out.svg">
         Send
       </button>
@@ -40,18 +42,87 @@
     
     <div id="receiveDiv">
       
-      <button id="addUpdates">
-      <img src="src/img/plus.svg">
-      Add Updates
+      <button id="add_updates">
+        <img src="src/img/plus.svg">
+        Add Updates
       </button>
       
     </div>
     
     <div class="hidden" id="sendDiv">
       
-      <button id="addFiles">
+      <button id="add_files">
         <img src="src/img/plus.svg">
         Add Files
+      </button>
+      
+      
+    </div>
+    
+  </div>
+  
+  <div class="hidden" id="addFilesDiv">
+    
+    
+    <div>
+      
+    <input class="hidden" id="importFiles" type="file" multiple>
+    
+      <button id="select_files_btn">
+        <img src="src/img/file.svg">
+        Select files
+      </button>
+      
+      <span id="filesNumberSpan"></span>
+      
+    </div>
+    
+    <hr>
+    
+    <div>
+      
+      <button id="compress_btn">
+        <img src="src/img/zip-file.svg">
+        Compress
+      </button>
+      
+      <button id="switch_compress_btn">
+        <img id="compress_on" src="src/img/on.svg">
+        <img class="hidden" id="compress_off" src="src/img/off.svg">
+      </button>
+      
+    </div>
+    
+    <hr>
+    
+    <div>
+      <input type="number" id="sizeInput" placeholder="Part size">
+      
+      <select id="sizeSelect">
+        <option value="1048576">MB</option>
+        <option value="1024">KB</option>
+      </select>
+      
+    </div>
+    
+    <hr>
+    
+    <div>
+      <input type="text" id="noteInput" placeholder="Note (optional, max 50 characters)" maxlength="50">
+    </div>
+    
+    <hr>
+    
+    <div align="middle" id="actions_addFiles">
+      
+      <button id="cancel_send">
+        <img src="src/img/x.svg">
+        Cancel
+      </button>
+      
+      <button id="send_files">
+        <img src="src/img/out.svg">
+        Send
       </button>
       
     </div>
