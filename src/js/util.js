@@ -1,5 +1,7 @@
-import * as localforage from "localforage";
-import * as jszip from "jszip";
+import localforage from "localforage";
+import JSZip from "jszip";
+import getRGB from 'consistent-color-generation';
+
 
 
 export function toggle_classes(elems, classes) {

@@ -7,8 +7,7 @@
   "devDependencies": {
     "eruda": "^3.0.1",
     "vite": "^5.0.10",
-    "vite-plugin-html": "^3.2.0",
-    "vite-plugin-zip-pack": "^1.0.7"
+    "vite-plugin-html": "^3.2.0"
   },
   "dependencies": {
     "consistent-color-generation": "^0.4.0",
