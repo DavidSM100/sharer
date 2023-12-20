@@ -1,4 +1,5 @@
 import * as main from './main.js';
+import { ls_set } from './util.js';
 
 // Switch between send and receive screens
 show_receive.addEventListener("click", function () {
@@ -34,12 +35,13 @@ compress_btn.addEventListener("click", main.switch_compress);
 switch_compress_btn.addEventListener("click", main.switch_compress);
 
 
+// Save part size data
 sizeInput.addEventListener("input", function() {
-  localStorage.setItem("sizeValue", this.value);
+  ls_set("sizeValue", this.value);
 });
 
 sizeSelect.addEventListener("change", function() {
-  localStorage.setItem("sizeUnit", this.value);
+  ls_set("sizeUnit", this.value);
 });
 
 
@@ -48,3 +50,7 @@ cancel_send.addEventListener("click", function() {
   addFilesDiv.style.display = "none";
   homeDiv.style.display = "block";
 });
+
+
+// Add files to queue
+send_files.addEventListener("click", main.add_files_to_queue);
