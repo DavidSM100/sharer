@@ -21,48 +21,65 @@ var filesObj = {};
 export function processUpdate(payload) {
   const sender = payload.sender;
   const color = sender.split("-")[1];
-
   const user = payload.user;
 
   if (payload.files) {
     // info
-    const note = payload.note;
-    const part_size = payload.part_size;
     const files = payload.files;
 
     files.forEach(function (file) {
       const id = file.id;
-      const name = file.name;
-      const type = file.type;
-      const size = file.size;
-      const total_parts = file.total_parts;
+      filesObj[id] = filesObj[id] || {};
+      var fileObj = filesObj[id];
+      fileObj.parts = fileObj.parts || {};
+
+      fileObj.sender = sender;
+      fileObj.color = color;
+      fileObj.user = user;
+      fileObj.note = payload.note;
+      fileObj.id = id;
+      fileObj.name = file.name;
+      fileObj.type = file.type;
+      fileObj.size = file.size;
+      fileObj.part_size = payload.part_size;
+      fileObj.total_parts = file.total_parts;
     });
 
   }
 
   if (payload.part) {
     // part
-    const part = payload.part;
+    const id = payload.id;
+    filesObj[id] = filesObj[id] || {};
+    var fileObj = filesObj[id];
+    fileObj.parts = fileObj.parts || {};
 
     const state = payload.state;
     const split_state = state.split("/");
-    const part_number = split_state[0];
-    const total_parts = split_state[1];
 
-    const id = payload.id;
     const splited_id = util.split_id(id);
-    const time = splited_id[0];
     const rest = splited_id[1];
-
     const splited_rest = util.split_id(rest);
-    const name = splited_rest[1];
+
+    fileObj.sender = sender;
+    fileObj.color = color;
+    fileObj.user = user;
+    fileObj.id = id;
+    fileObj.time = splited_id[0];
+    fileObj.name = splited_rest[1];
+    fileObj.total_parts = split_state[1];
 
     if (payload.type) {
       // part 1
-      const type = payload.type;
+      fileObj.type = payload.type;
     }
 
+    fileObj.parts[split_state[0]] = payload.part;
+
   }
+
+
+
 }
 
 // Toggle receive/send divs and the button styles too
