@@ -12,19 +12,19 @@ show_send.addEventListener("click", function () {
 
 
 // Show the send files screen
-add_files.addEventListener("click", function() {
+add_files.addEventListener("click", function () {
   homeDiv.style.display = "none";
   addFilesDiv.style.display = "block";
 });
 
 
 // Trigger the file input to select files from system
-select_files_btn.addEventListener("click", function() {
+select_files_btn.addEventListener("click", function () {
   importFiles.click();
 });
 
 // Show the number of files
-importFiles.addEventListener("change", function() {
+importFiles.addEventListener("change", function () {
   filesNumberSpan.innerHTML = this.files.length + " file(s)";
 });
 
@@ -36,17 +36,17 @@ switch_compress_btn.addEventListener("click", main.switch_compress);
 
 
 // Save part size data
-sizeInput.addEventListener("input", function() {
+sizeInput.addEventListener("input", function () {
   ls_set("sizeValue", this.value);
 });
 
-sizeSelect.addEventListener("change", function() {
+sizeSelect.addEventListener("change", function () {
   ls_set("sizeUnit", this.value);
 });
 
 
 // Cancel sending
-cancel_send.addEventListener("click", function() {
+cancel_send.addEventListener("click", function () {
   addFilesDiv.style.display = "none";
   homeDiv.style.display = "block";
 });
@@ -54,3 +54,9 @@ cancel_send.addEventListener("click", function() {
 
 // Add files to queue
 send_files.addEventListener("click", main.add_files_to_queue);
+
+
+// Receive updates
+window.webxdc.setUpdateListener(function (update) {
+  main.processUpdate(update.payload);
+});

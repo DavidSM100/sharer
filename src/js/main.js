@@ -1,7 +1,9 @@
 import * as util from './util.js';
 
+
 const self_id = util.self_id();
 const self_name = util.self_name();
+
 
 // Set saved part size data
 var sizeValue = util.ls_get("sizeValue");
@@ -14,6 +16,54 @@ if (sizeUnit) {
   sizeSelect.value = sizeUnit;
 }
 
+
+var filesObj = {};
+export function processUpdate(payload) {
+  const sender = payload.sender;
+  const color = sender.split("-")[1];
+
+  const user = payload.user;
+
+  if (payload.files) {
+    // info
+    const note = payload.note;
+    const part_size = payload.part_size;
+    const files = payload.files;
+
+    files.forEach(function (file) {
+      const id = file.id;
+      const name = file.name;
+      const type = file.type;
+      const size = file.size;
+      const total_parts = file.total_parts;
+    });
+
+  }
+
+  if (payload.part) {
+    // part
+    const part = payload.part;
+
+    const state = payload.state;
+    const split_state = state.split("/");
+    const part_number = split_state[0];
+    const total_parts = split_state[1];
+
+    const id = payload.id;
+    const splited_id = util.split_id(id);
+    const time = splited_id[0];
+    const rest = splited_id[1];
+
+    const splited_rest = util.split_id(rest);
+    const name = splited_rest[1];
+
+    if (payload.type) {
+      // part 1
+      const type = payload.type;
+    }
+
+  }
+}
 
 // Toggle receive/send divs and the button styles too
 export function toggle_receive_send(btn) {
@@ -36,7 +86,7 @@ export function add_files_to_queue() {
   const total_files = filesArr.length;
   if (total_files > 0) {
     const part_size = sizeInput.value * sizeSelect.value;
-    const min_size = 40960;
+    const min_size = 1024;//40960;
 
     if (part_size >= min_size) {
       const compress = compress_off.classList.contains('hidden');
@@ -51,12 +101,12 @@ export function add_files_to_queue() {
         files: []
       }
 
-      filesArr.forEach(async function (file, index) {
+      filesArr.forEach(async function (file, file_index) {
         const name = file.name;
         const type = file.type;
         const size = file.size;
         const time = Date.now();
-        const id = time + "-" + name;
+        const id = time + "-" + file_index + "-" + name;
 
         const options = {
           type: "base64"
@@ -88,8 +138,12 @@ export function add_files_to_queue() {
 
         const parts = util.split_base64(zip, part_size, zip_size, total_parts);
 
-        parts.forEach(function (part, index) {
-          const part_number = index + 1;
+        const file_digits = util.fix_number(`${file_index}`);
+
+
+        parts.forEach(function (part) {
+          const part_index = part[0];
+          const part_number = part_index + 1;
           const state = `${part_number}/${total_parts}`;
 
           var update = {
@@ -97,12 +151,12 @@ export function add_files_to_queue() {
               sender: self_id,
               user: self_name,
               id: id,
-              part: part,
+              part: part[1],
               state: state
             }
           }
 
-          if (index === 0) {
+          if (part_index === 0) {
             update.payload.type = type;
           }
 
@@ -113,16 +167,18 @@ export function add_files_to_queue() {
             descr: descr
           }
 
-          const key = `${Date.now()}-${part_number}`;
+          const part_digits = util.fix_number(`${part_index}`);
+
+          const key = `${Date.now()}${file_digits}${part_digits}`;
 
           util.lf_set(key, updateObj, "parts_db");
 
         });
 
-        if (index + 1 === total_files) {
+        if (file_index + 1 === total_files) {
           var infoString = `${total_files} file(s)`;
           if (total_files === 1) {
-            infoString = name;
+            infoString = `"${name}"`;
           }
 
           const update = {
@@ -130,7 +186,7 @@ export function add_files_to_queue() {
             info: `${self_name} is sending "${infoString}"`
           }
 
-          const descr = `info: "${infoString}"`;
+          const descr = `info: ${infoString}`;
 
           const updateObj = {
             update: update,
@@ -138,7 +194,7 @@ export function add_files_to_queue() {
           }
 
 
-          util.lf_set(`${Date.now()}`, updateObj, "info_db");
+          util.lf_set(`${Date.now()}${file_digits}`, updateObj, "info_db");
 
         }
 
@@ -156,24 +212,21 @@ export function add_files_to_queue() {
 
 
 async function send() {
-  var db_name = "info_db";
-  var keys = await util.lf_keys(db_name);
+  const key = await util.lf_key(0, "info_db") || await util.lf_key(0, "parts_db") || "none";
 
-  if (keys.length === 0) {
-    db_name = "parts_db";
-    keys = await util.lf_keys(db_name);
-  }
-
-  if (keys.length > 0) {
-    const id = keys[0];
-    const updateObj = await util.lf_get(id, db_name);
-    
-    util.send_update(updateObj.update, updateObj.descr);
-    await util.lf_remove(id, db_name);
+  if (key === "none") {
     queue();
   } else {
+    const id = key[0];
+    const db_name = key[1];
+
+    const updateObj = await util.lf_get(id, db_name);
+    util.send_update(updateObj.update, updateObj.descr);
+
+    await util.lf_remove(id, db_name);
     queue();
   }
+
 }
 
 async function queue() {

@@ -40,6 +40,13 @@ export async function lf_remove(key, db_name) {
   return await db.removeItem(key);
 }
 
+export async function lf_key(index, db_name) {
+  const db = lf_db(db_name);
+  const key = await db.key(index);
+  if (key) return [key, db_name];
+}
+
+
 export function toggle_classes(elems, classes) {
   elems.forEach(function (elem) {
     classes.forEach(function (class_name) {
@@ -101,15 +108,33 @@ export function split_base64(base64, part_size, base64_size, total_parts) {
     if (i + 1 === total_parts) {
       end = base64_size;
     }
-    
+
     var part = base64.substring(start, end);
-    parts.push(part);
+    parts.push([i, part]);
   }
-  
+
   return parts;
 }
 
 
 export function send_update(update, descr) {
   window.webxdc.sendUpdate(update, descr);
+}
+
+
+export function split_id(id) {
+  const regex = /^([0-9]+)-(.+)/;
+  const match = id.match(regex);
+  return [match[1], match[2]];
+}
+
+
+export function fix_number(number) {
+  const length = number.length;
+  var zeros = "";
+  for (var i = length; i < 5; i++) {
+    zeros += "0";
+  }
+
+  return zeros + number;
 }
