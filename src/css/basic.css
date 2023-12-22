@@ -2,18 +2,18 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #fff;
-    --bg: hsl(0, 0%, 9%);
-    --elem-bg: hsl(240, 3.7%, 15.9%);
-    --btn-bg: hsl(240, 5.3%, 26.1%);
+    --bg: hsl(0, 0%, 10%);
+    --elem-bg: hsl(0, 0%, 15%);
+    --btn-bg: hsl(0, 0%, 20%);
   }
 }
 
 @media (prefers-color-scheme: light) {
   :root {
     --text: #000;
-    --bg: hsl(210, 40%, 98%);
-    --elem-bg: hsl(216, 12.2%, 83.9%);
-    --btn-bg: hsl(210, 4%, 80%);
+    --bg: hsl(0, 0%, 95%);
+    --elem-bg: hsl(0, 0%, 85%);
+    --btn-bg: hsl(0, 0%, 75%);
   }
 }
 
@@ -26,7 +26,7 @@ body {
 
 button, input, select {
   color: var(--text);
-  background-color: var(--btn-bg);
+  background-color: var(--elem-bg);
   border-color: transparent;
   border-radius: 7px;
 }

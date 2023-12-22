@@ -138,3 +138,52 @@ export function fix_number(number) {
 
   return zeros + number;
 }
+
+
+export function real_size(bytes) {
+  var size = bytes / 1048576;
+  var unit = "MB";
+  if (bytes < 1048576) {
+    size = bytes / 1024;
+    unit = "KB";
+  }
+  
+  return size.toFixed(2) + " " + unit;
+}
+
+
+export function percent(part, all) {
+  return part / all * 100;
+}
+
+
+export function arr(obj) {
+  const length = Object.keys(obj).length;
+  var arr = [];
+  for (var i = 0; i < length; i++) {
+    const val = obj[i];
+    arr.push(val);
+  }
+  if (arr.length === length) return arr;
+}
+
+
+export async function unZip(zip) {
+  const zipObj = JSZip();
+  var options = { base64: true };
+  const obj = await zipObj.loadAsync(zip, options);
+  const key = Object.keys(obj.files)[0];
+  const fileObj = obj.files[key];
+  const blob = await fileObj.async("blob");
+  return blob;
+}
+
+
+export function send_file(data, name, type) {
+  const message = {};
+  const file = {};
+  file[type] = data;
+  file.name = name;
+  message.file = file;
+  window.webxdc.sendToChat(message);
+}

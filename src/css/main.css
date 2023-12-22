@@ -46,9 +46,69 @@
 
 
 .active {
-  background-color: hsl(198, 93.2%, 59.6%);
+  color: purple;
 }
 
 .no_active {
+  color: grey;
+}
+
+
+.elem {
+  width: 98%;
+  padding-right: 1%;
+  padding-left: 1%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 8px;
+  background-color: var(--elem-bg);
+  border-radius: 5px;
+}
+
+.elem-sender {
+  width: 95%;
+  margin-bottom: 5px;
+  font-size: 100%;
+}
+
+.elem-name {
+  width: 95%;
+  margin-bottom: 5px;
+  font-size: 90%;
+}
+
+.hide_rest {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.elem-size {
+  font-size: 80%;
+  text-align: right;
+}
+
+
+.elem-progressBar {
+  width: 100%;
   background-color: var(--btn-bg);
+  border-radius: 3px;
+  margin-bottom: 2px;
+}
+
+.elem-progress {
+  width: 0;
+  height: 10px;
+  border-radius: 3px;
+  background-color: green;
+  transition: 0.5s ease-in-out;
+}
+
+.elem-actions button {
+  margin-left: 5px;
+  background-color: var(--btn-bg);
+}
+
+.elem-actions button:active {
+  background-color: hsl(198, 93.2%, 59.6%);
 }

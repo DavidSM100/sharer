@@ -1,5 +1,5 @@
 import * as util from './util.js';
-
+import shareSvg from '../img/share.svg';
 
 const self_id = util.self_id();
 const self_name = util.self_name();
@@ -17,6 +17,121 @@ if (sizeUnit) {
 }
 
 
+async function createUIElem(id) {
+  const fileObj = filesObj[id];
+  //console.log(fileObj);
+
+  const user = fileObj.user;
+  const sender = fileObj.sender;
+  const color = fileObj.color;
+  const name = fileObj.name;
+  const total_parts = fileObj.total_parts;
+
+  var div_id = "receivedDiv";
+
+  if (sender === self_id) {
+    div_id = "sendedDiv";
+  }
+
+  const div = util.getElem(div_id);
+
+  var elem = util.getElem(id);
+  if (!elem) {
+    elem = util.createElem('div');
+    elem.id = id;
+    elem.classList.add('elem');
+
+    if (sender !== self_id) {
+      var sender_name = util.createElem('div');
+      sender_name.innerHTML = `<b style="color:${color}">${user}</b>`;
+      sender_name.classList.add('elem-sender');
+      sender_name.classList.add('hide_rest');
+      elem.appendChild(sender_name);
+    }
+
+    var progressBar = util.createElem('div');
+    progressBar.id = `${id}-progressBar`;
+    progressBar.classList.add('elem-progressBar');
+
+    var progress = util.createElem('div');
+    progress.id = `${id}-progress`;
+    progress.classList.add('elem-progress');
+    progressBar.appendChild(progress);
+    elem.appendChild(progressBar);
+
+
+    var file_name = util.createElem('div');
+    file_name.classList.add('elem-name');
+    file_name.classList.add('hide_rest');
+    file_name.innerHTML = name;
+    elem.appendChild(file_name);
+
+    var infoDiv = util.createElem('div');
+    infoDiv.id = `${id}_info`;
+
+    var actionsDiv = util.createElem('div');
+    actionsDiv.id = `${id}_actions`;
+    actionsDiv.classList.add('elem-actions');
+    elem.appendChild(infoDiv);
+    elem.appendChild(actionsDiv)
+    div.appendChild(elem);
+  }
+
+
+  var size = fileObj.size;
+  if (size) {
+    // info
+    var size_elem = util.getElem(`${id}-size`);
+    if (!size_elem) {
+      var infoDiv = util.getElem(`${id}_info`);
+      size_elem = util.createElem('div');
+      size_elem.id = `${id}-size`;
+      var real_size = util.real_size(size);
+      size_elem.innerHTML = real_size;
+      size_elem.classList.add('elem-size');
+      infoDiv.appendChild(size_elem);
+    }
+  }
+
+  var parts = fileObj.parts;
+  var length = Object.keys(parts).length;
+
+  if (length > 0) {
+    // part
+    var progress = util.getElem(`${id}-progress`);
+    const percent = util.percent(length, total_parts) + "%";
+    progress.style.width = percent;
+
+    if (length === 1) {
+      // first part
+    }
+
+
+    if (`${length}` === total_parts) {
+      const partsArr = util.arr(parts);
+      const base64 = partsArr.join('');
+      const blob = await util.unZip(base64);
+      const file = new File([blob], name, { type: fileObj.type });
+
+      var actions_div = util.getElem(`${id}_actions`);
+
+      const share_btn = util.createElem('button');
+      share_btn.onclick = function () {
+        util.send_file(file, name, "blob");
+      }
+      var share_img = util.createElem('img');
+      share_img.src = shareSvg;
+      share_btn.appendChild(share_img);
+      actions_div.appendChild(share_btn);
+      const progressBar = util.getElem(`${id}-progressBar`);
+      elem.removeChild(progressBar);
+    }
+
+  }
+
+}
+
+
 var filesObj = {};
 export function processUpdate(payload) {
   const sender = payload.sender;
@@ -26,7 +141,7 @@ export function processUpdate(payload) {
   if (payload.files) {
     // info
     const files = payload.files;
-
+    var counter = 0;
     files.forEach(function (file) {
       const id = file.id;
       filesObj[id] = filesObj[id] || {};
@@ -43,6 +158,12 @@ export function processUpdate(payload) {
       fileObj.size = file.size;
       fileObj.part_size = payload.part_size;
       fileObj.total_parts = file.total_parts;
+
+      counter += 1;
+      if (counter === files.length) {
+        console.log(filesObj);
+        createUIElem(id);
+      }
     });
 
   }
@@ -74,11 +195,10 @@ export function processUpdate(payload) {
       fileObj.type = payload.type;
     }
 
-    fileObj.parts[split_state[0]] = payload.part;
+    fileObj.parts[split_state[0] - 1] = payload.part;
 
+    createUIElem(id);
   }
-
-
 
 }
 
@@ -97,13 +217,17 @@ export function switch_compress() {
 }
 
 
+function partsUpdates(parts) {
+  
+}
+
 export function add_files_to_queue() {
   const filesObj = importFiles.files;
   const filesArr = Array.from(filesObj);
   const total_files = filesArr.length;
   if (total_files > 0) {
     const part_size = sizeInput.value * sizeSelect.value;
-    const min_size = 1024;//40960;
+    const min_size = 40960;
 
     if (part_size >= min_size) {
       const compress = compress_off.classList.contains('hidden');
@@ -119,11 +243,12 @@ export function add_files_to_queue() {
       }
 
       filesArr.forEach(async function (file, file_index) {
-        const name = file.name;
         const type = file.type;
         const size = file.size;
         const time = Date.now();
-        const id = time + "-" + file_index + "-" + name;
+        const file_digits = util.fix_number(`${file_index}`);
+        const name = file.name;
+        const id = time + "-" + file_digits + "-" + name;
 
         const options = {
           type: "base64"
@@ -153,9 +278,8 @@ export function add_files_to_queue() {
         filesInfo.files.push(fileInfo);
 
 
-        const parts = util.split_base64(zip, part_size, zip_size, total_parts);
 
-        const file_digits = util.fix_number(`${file_index}`);
+        const parts = util.split_base64(zip, part_size, zip_size, total_parts);
 
 
         parts.forEach(function (part) {
@@ -200,8 +324,10 @@ export function add_files_to_queue() {
 
           const update = {
             payload: filesInfo,
-            info: `${self_name} is sending "${infoString}"`
+            info: `${self_name} is sending ${infoString}`
           }
+
+          console.log(update);
 
           const descr = `info: ${infoString}`;
 
@@ -212,6 +338,9 @@ export function add_files_to_queue() {
 
 
           util.lf_set(`${Date.now()}${file_digits}`, updateObj, "info_db");
+
+          addFilesDiv.style.display = "none";
+          homeDiv.style.display = "block";
 
         }
 
