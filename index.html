@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 
 <head>
   
@@ -13,8 +14,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+  <link rel="stylesheet" href="src/css/theme.css">
   <link rel="stylesheet" href="src/css/basic.css">
   <link rel="stylesheet" href="src/css/main.css">
+  <link rel="stylesheet" href="src/css/elem.css">
   
   
   <script src="webxdc.js"></script>
@@ -27,14 +30,14 @@
   <div id="homeDiv">
     
     <!-- Switch between receive and send divs -->
-    <div align="middle">
+    <div align="middle" id="headerBtns">
       
-      <button class="active" id="show_receive">
+      <button class="active" id="show_receiveBtn">
         <img src="src/img/in.svg">
         Receive
       </button>
       
-      <button class="no_active" id="show_send">
+      <button class="no_active" id="show_sendBtn">
         <img src="src/img/out.svg">
         Send
       </button>
@@ -45,7 +48,7 @@
       
       <div id="receivedDiv"></div>
       
-      <button id="add_updates">
+      <button id="select_updatesBtn">
         <img src="src/img/plus.svg">
         Import Updates
       </button>
@@ -56,9 +59,9 @@
       
       <div id="sendedDiv"></div>
       
-      <button id="add_files">
+      <button id="add_filesBtn">
         <img src="src/img/plus.svg">
-        Add Files
+        Send Files
       </button>
       
       
@@ -68,30 +71,11 @@
   
   <div class="hidden" id="addFilesDiv">
     
+    <h2 align="middle">Send Files</h2>
     
     <div>
-      
-      <input class="hidden" id="importFiles" type="file" multiple>
-      
-      <button id="select_files_btn">
-        <img src="src/img/file.svg">
-        Select files
-      </button>
-      
-      <span id="filesNumberSpan"></span>
-      
-    </div>
-    
-    <hr>
-    
-    <div>
-      
-      <button id="compress_btn">
-        <img src="src/img/zip-file.svg">
-        Compress
-      </button>
-      
-      <button id="switch_compress_btn">
+      Compress:
+      <button id="switch_compressBtn">
         <img id="compress_on" src="src/img/on.svg">
         <img class="hidden" id="compress_off" src="src/img/off.svg">
       </button>
@@ -101,7 +85,8 @@
     <hr>
     
     <div>
-      <input type="number" id="sizeInput" placeholder="Part size">
+      Part size:
+      <input value="1" type="number" id="sizeInput" placeholder="Mandatory">
       
       <select id="sizeSelect">
         <option value="1048576">MB</option>
@@ -113,27 +98,29 @@
     <hr>
     
     <div>
-      <input type="text" id="noteInput" placeholder="Note (optional, max 50 characters)" maxlength="50">
+      <input type="text" id="noteInput" placeholder="Optional Note (max 50 characters)" maxlength="50">
     </div>
     
     <hr>
     
     <div align="middle" id="actions_addFiles">
       
-      <button id="cancel_send">
+      <button id="cancel_sendBtn">
         <img src="src/img/x.svg">
         Cancel
       </button>
       
-      <button id="send_files">
-        <img src="src/img/out.svg">
-        Send
+      <button id="select_filesBtn">
+        <img src="src/img/file.svg">
+        Select
       </button>
       
     </div>
     
   </div>
   
-  <script type="module" src="src/js/listener.js"></script>
+  <script type="module" src="src/js/main.js"></script>
   
 </body>
+
+</html>

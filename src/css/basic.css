@@ -1,32 +1,15 @@
-/* THEME */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #fff;
-    --bg: hsl(0, 0%, 10%);
-    --elem-bg: hsl(0, 0%, 15%);
-    --btn-bg: hsl(0, 0%, 20%);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --text: #000;
-    --bg: hsl(0, 0%, 95%);
-    --elem-bg: hsl(0, 0%, 85%);
-    --btn-bg: hsl(0, 0%, 75%);
-  }
-}
-
-
 body {
-  color: var(--text);
   background-color: var(--bg);
+}
+
+body, button, input, select {
+  font-family: Sans-Serif;
+  color: var(--text);
 }
 
 
 button, input, select {
-  color: var(--text);
-  background-color: var(--elem-bg);
+  background-color: var(--btn-bg);
   border-color: transparent;
   border-radius: 7px;
 }
@@ -43,6 +26,11 @@ img {
 
 hr {
   border-color: purple;
+}
+
+
+h2, select {
+  color: purple;
 }
 
 

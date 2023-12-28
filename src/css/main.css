@@ -1,17 +1,28 @@
-#show_receive,
-#show_send,
-#cancel_send,
-#send_files,
-#select_files_btn,
-#compress_btn,
+#headerBtns {
+  width: 95%;
+  position: fixed;
+  top: 5px;
+  opacity: 0.8;
+}
+
+#receiveDiv,
+#sendDiv {
+  margin-top: 50px;
+}
+
+
+#show_receiveBtn,
+#show_sendBtn,
+#cancel_sendBtn,
+#select_filesBtn,
 #sizeInput {
   width: 45%;
   height: 40px;
 }
 
 
-#add_updates,
-#add_files {
+#select_updatesBtn,
+#add_filesBtn {
   height: 40px;
   position: fixed;
   bottom: 15px;
@@ -20,11 +31,11 @@
 }
 
 
-#switch_compress_btn {
+#switch_compressBtn {
   height: 40px;
 }
 
-#switch_compress_btn img {
+#switch_compressBtn img {
   width: 100%;
   height: 100%;
 }
@@ -39,76 +50,24 @@
 }
 
 
-
 .hidden {
   display: none;
 }
 
 
 .active {
-  color: purple;
+  color: var(--text);
+  background-color: hsl(198, 93.2%, 59.6%);
 }
 
 .no_active {
   color: grey;
+  background-color: var(--btn-bg);
 }
 
-
-.elem {
-  width: 98%;
-  padding-right: 1%;
-  padding-left: 1%;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  margin-top: 8px;
-  background-color: var(--elem-bg);
-  border-radius: 5px;
-}
-
-.elem-sender {
-  width: 95%;
-  margin-bottom: 5px;
-  font-size: 100%;
-}
-
-.elem-name {
-  width: 95%;
-  margin-bottom: 5px;
-  font-size: 90%;
-}
 
 .hide_rest {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.elem-size {
-  font-size: 80%;
-  text-align: right;
-}
-
-
-.elem-progressBar {
-  width: 100%;
-  background-color: var(--btn-bg);
-  border-radius: 3px;
-  margin-bottom: 2px;
-}
-
-.elem-progress {
-  width: 0;
-  height: 10px;
-  border-radius: 3px;
-  background-color: green;
-  transition: 0.5s ease-in-out;
-}
-
-.elem-actions button {
-  margin-left: 5px;
-  background-color: var(--btn-bg);
-}
-
-.elem-actions button:active {
-  background-color: hsl(198, 93.2%, 59.6%);
 }
