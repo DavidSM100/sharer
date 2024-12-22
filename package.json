@@ -1,0 +1,24 @@
+{
+  "name": "sharer",
+  "private": true,
+  "version": "2.0",
+  "type": "module",
+  "scripts": {
+    "serve": "vite --port 3000",
+    "webxdc-dev": "webxdc-dev run http://localhost:3000",
+    "build": "vite build",
+    "preview": "vite preview",
+    "webxdc-dev-preview": "webxdc-dev run ./dist"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@webxdc/vite-plugins": "^1.5.0",
+    "svelte": "^5.2.7",
+    "vite": "^6.0.1",
+    "webxdc-dev": "^0.17.0",
+    "webxdc-types": "^1.0.1"
+  },
+  "dependencies": {
+    "localforage": "^1.10.0"
+  }
+}
