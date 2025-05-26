@@ -1,29 +1,34 @@
-<script>
-  import { readableSize, toPercent } from "../js/utils.js";
+<script lang="ts">
+  import { readableSize, toPercent } from "../ts/utils";
   import downloadImg from "../assets/download.svg";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import Loader from "./Loader.svelte";
   import localforage from "localforage";
+  import type { FileData } from "../ts/types";
 
-  let { id, data } = $props();
-  let exportingFile = $state(false);
+  let { id, data }: {id: string, data: FileData} = $props();
+  let exportingFile: boolean = $state(false);
 
   async function exportFile() {
     exportingFile = true;
-    let parts = {
+    interface Parts {
+      [index: number]: string,
+      length: number
+    }
+    let parts: Parts = {
       length: 0,
     };
 
     const db = localforage.createInstance({ name: id });
-    await db.iterate((val, i) => {
-      parts[i] = val;
+    await db.iterate((val: string, i: string) => {
+      parts[Number(i)] = val;
       ++parts.length;
     });
 
     if (parts.length !== data.totalParts) {
-      Object.entries(data.parts).forEach(([i, val]) => {
+      Object.entries(data.parts!).forEach(([i, val]: [string, string]) => {
         if (val) {
-          parts[i] = val;
+          parts[Number(i)] = val;
           ++parts.length;
         }
       });
@@ -32,7 +37,7 @@
     try {
       await window.webxdc.sendToChat({
         file: {
-          name: data.name,
+          name: data.name!,
           base64: Array.from(parts).join(""),
         },
       });

@@ -12,10 +12,13 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tsconfig/svelte": "^5.0.4",
     "@webxdc/types": "^2.1.2",
     "@webxdc/vite-plugins": "^1.5.1",
     "@webxdc/webxdc-dev": "^0.19.0",
     "svelte": "^5.33.2",
+    "svelte-check": "^4.2.1",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },
   "dependencies": {

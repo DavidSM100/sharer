@@ -1,5 +1,5 @@
-<script>
-  let { progress, text } = $props();
+<script lang="ts">
+  let { progress, text }: {progress: number, text: string} = $props();
 </script>
 
 <div

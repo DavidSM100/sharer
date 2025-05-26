@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
+  import type { ReceivedStatusUpdate } from "@webxdc/types";
+  import type { FileInfo, FilePart, FilesData } from "../ts/types";
   import FileCard from "./FileCard.svelte";
   import localforage from "localforage";
 
-  let filesData = $state({});
+  let filesData: FilesData = $state({});
 
-  window.webxdc.setUpdateListener(async (update) => {
+  window.webxdc.setUpdateListener(async (update: ReceivedStatusUpdate<FileInfo | FilePart>) => {
     const id = update.payload.id;
     filesData[id] = filesData[id] || {};
     const fileData = filesData[id];

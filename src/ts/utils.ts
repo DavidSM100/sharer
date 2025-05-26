@@ -1,11 +1,6 @@
 export { blobToBase64, splitString, readableSize, toPercent };
 
-/**
- *
- * @param {Blob} blob
- * @returns {Promise<string>}
- */
-async function blobToBase64(blob) {
+async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -21,16 +16,10 @@ async function blobToBase64(blob) {
   });
 }
 
-/**
- *
- * @param {string} string
- * @param {number} partsize
- * @returns {Array<string>}
- */
-function splitString(string, partsize) {
+function splitString(string: string, partsize: number): string[] {
   const length = string.length;
   const totalparts = Math.ceil(length / partsize);
-  let parts = [];
+  let parts: string[] = [];
   for (let i = 0; i < totalparts; i++) {
     const start = i * partsize;
     const end = start + partsize;
@@ -40,12 +29,7 @@ function splitString(string, partsize) {
   return parts;
 }
 
-/**
- *
- * @param {number} size
- * @returns {string}
- */
-function readableSize(size) {
+function readableSize(size: number): string {
   let i = Math.floor(Math.log(size) / Math.log(1000));
   if (size === 0) i = 0;
   return (
@@ -55,10 +39,4 @@ function readableSize(size) {
   );
 }
 
-/**
- *
- * @param {number} part
- * @param {number} total
- * @returns {number}
- */
-const toPercent = (part, total) => (part / total) * 100;
+const toPercent = (part: number, total: number): number => (part / total) * 100;
