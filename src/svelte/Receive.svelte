@@ -1,8 +1,18 @@
 <script>
   import FileCard from "./FileCard.svelte";
+  import FileViewer from "./FileViewer.svelte";
   import localforage from "localforage";
 
   let filesData = $state({});
+  let viewerFileId = $state(null);
+
+  function openFileViewer(id) {
+    viewerFileId = id;
+  }
+
+  function closeFileViewer() {
+    viewerFileId = null;
+  }
 
   window.webxdc.setUpdateListener(async (update) => {
     const id = update.payload.id;
@@ -41,6 +51,10 @@
 
 <main>
   {#each Object.entries(filesData) as [id, data]}
-    <FileCard {id} {data} />
+    <FileCard {id} {data} onViewFile={openFileViewer} />
   {/each}
 </main>
+
+{#if viewerFileId}
+  <FileViewer id={viewerFileId} allFiles={filesData} onClose={closeFileViewer} />
+{/if}

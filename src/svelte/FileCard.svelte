@@ -1,51 +1,44 @@
 <script>
-  import { readableSize, toPercent } from "../js/utils.js";
+  import { readableSize, toPercent, exportFileToChat } from "../js/utils.js";
   import downloadImg from "../assets/download.svg";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import Loader from "./Loader.svelte";
-  import localforage from "localforage";
 
-  let { id, data } = $props();
+  let { id, data, onViewFile } = $props();
   let exportingFile = $state(false);
 
   async function exportFile() {
     exportingFile = true;
-    let parts = {
-      length: 0,
-    };
-
-    const db = localforage.createInstance({ name: id });
-    await db.iterate((val, i) => {
-      parts[i] = val;
-      ++parts.length;
-    });
-
-    if (parts.length !== data.totalParts) {
-      Object.entries(data.parts).forEach(([i, val]) => {
-        if (val) {
-          parts[i] = val;
-          ++parts.length;
-        }
-      });
-    }
-
     try {
-      await window.webxdc.sendToChat({
-        file: {
-          name: data.name,
-          base64: Array.from(parts).join(""),
-        },
-      });
+      await exportFileToChat(id, data);
     } catch (err) {
-      console.log(err);
-      alert(err);
+      console.error("Error exporting file:", err);
+      alert("Failed to export file: " + err.message);
     } finally {
       exportingFile = false;
     }
   }
+
+  function handleCardClick(event) {
+    // Don't open viewer if user clicked on download button
+    if (event.target.closest('button')) {
+      return;
+    }
+    
+    if (data.name && data.totalParts && onViewFile) {
+      onViewFile(id);
+    }
+  }
+
+  function handleKeydown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleCardClick(event);
+    }
+  }
 </script>
 
-<main>
+<div onclick={handleCardClick} onkeydown={handleKeydown} role="button" tabindex="0" class="file-card" class:clickable={data.name && data.totalParts}>
   <div class="download">
     {#if data.receivedParts === data.totalParts}
       {#if exportingFile}
@@ -80,10 +73,10 @@
       </div>
     {/if}
   </div>
-</main>
+</div>
 
 <style>
-  main {
+  .file-card {
     display: flex;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -91,6 +84,20 @@
     padding: 3px;
     background-color: #eee;
     align-items: center;
+  }
+
+  .file-card.clickable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .file-card.clickable:hover {
+    background-color: #ddd;
+  }
+
+  .file-card.clickable:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
   }
 
   .download {
@@ -115,9 +122,14 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    main {
+    .file-card {
       background-color: #333;
     }
+    
+    .file-card.clickable:hover {
+      background-color: #444;
+    }
+    
     button {
       background-color: #444;
     }
