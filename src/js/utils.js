@@ -1,4 +1,6 @@
-export { blobToBase64, splitString, readableSize, toPercent };
+import localforage from "localforage";
+
+export { blobToBase64, splitString, readableSize, toPercent, exportFileToChat };
 
 /**
  *
@@ -62,3 +64,42 @@ function readableSize(size) {
  * @returns {number}
  */
 const toPercent = (part, total) => (part / total) * 100;
+
+/**
+ * Universal function to export a file to chat
+ * @param {string} fileId - The ID of the file
+ * @param {Object} fileData - File data containing name, totalParts, and parts
+ * @param {string} fileData.name - The name of the file
+ * @param {number} fileData.totalParts - Total number of parts expected
+ * @param {Object} fileData.parts - Object containing file parts (optional, for memory fallback)
+ * @returns {Promise<void>}
+ */
+async function exportFileToChat(fileId, fileData) {
+  let parts = { length: 0 };
+
+  const db = localforage.createInstance({ name: fileId });
+  await db.iterate((val, i) => {
+    parts[i] = val;
+    ++parts.length;
+  });
+
+  if (parts.length !== fileData.totalParts && fileData.parts) {
+    Object.entries(fileData.parts).forEach(([i, val]) => {
+      if (val) {
+        parts[i] = val;
+        ++parts.length;
+      }
+    });
+  }
+
+  if (parts.length !== fileData.totalParts) {
+    throw new Error(`Missing file parts. Expected ${fileData.totalParts}, got ${parts.length}`);
+  }
+
+  await window.webxdc.sendToChat({
+    file: {
+      name: fileData.name,
+      base64: Array.from(parts).join(""),
+    },
+  });
+}

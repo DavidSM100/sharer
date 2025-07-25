@@ -51,6 +51,7 @@
         size: size,
         totalParts: parts.length,
         sender: sender,
+        mimeType: file.type,
       },
       info: info,
       notify: {
