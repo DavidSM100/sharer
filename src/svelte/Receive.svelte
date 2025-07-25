@@ -23,6 +23,7 @@
       fileData.name = update.payload.name;
       fileData.size = update.payload.size;
       fileData.sender = update.payload.sender;
+      fileData.mimeType = update.payload.mimeType;
       fileData.totalParts = update.payload.totalParts;
     } else {
       fileData.parts = fileData.parts || {};

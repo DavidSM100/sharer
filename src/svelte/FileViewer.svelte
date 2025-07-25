@@ -8,6 +8,7 @@
   let error = $state(null);
   let currentFileId = $state(id);
   let currentFileData = $derived(allFiles[currentFileId] || {});
+  let currentFileType = $derived(currentFileData.mimeType?.split("/")[0]);
   let showNavigationHint = $state(false);
 
   const completeFiles = $derived(
@@ -96,46 +97,6 @@
     loadFile();
   }
 
-  const mediaFileTypes = {
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'gif': 'image/gif',
-    'webp': 'image/webp',
-    'svg': 'image/svg+xml',
-    'bmp': 'image/bmp',
-    'ico': 'image/x-icon',
-    'mp4': 'video/mp4',
-    'webm': 'video/webm',
-    'ogv': 'video/ogg',
-    'mov': 'video/quicktime',
-    'avi': 'video/x-msvideo',
-    'mkv': 'video/x-matroska',
-    'mp3': 'audio/mpeg',
-    'wav': 'audio/wav',
-    'ogg': 'audio/ogg',
-    'aac': 'audio/aac',
-    'flac': 'audio/flac',
-    'm4a': 'audio/mp4',
-  };
-
-  function getFileExtension(filename) {
-    return filename ? filename.toLowerCase().split('.').pop() : '';
-  }
-
-  function isMediaFile(filename) {
-    return mediaFileTypes[getFileExtension(filename)] !== undefined;
-  }
-
-  function getFileType(filename) {
-    const mimeType = mediaFileTypes[getFileExtension(filename)];
-    return mimeType ? mimeType.split('/')[0] : 'unknown';
-  }
-
-  function getMimeType(filename) {
-    return mediaFileTypes[getFileExtension(filename)] || 'application/octet-stream';
-  }
-
   async function loadFile() {
     try {
       loading = true;
@@ -184,15 +145,14 @@
       }
 
       const base64Data = partsArray.join("");
-      const mimeType = getMimeType(currentFileData.name);
-      
+
       const binaryString = atob(base64Data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
-      
-      const blob = new Blob([bytes], { type: mimeType });
+
+      const blob = new Blob([bytes], { type: currentFileData.mimeType });
       fileUrl = URL.createObjectURL(blob);
       loading = false;
     } catch (err) {
@@ -342,15 +302,15 @@
         <p>{error}</p>
         <button onclick={downloadFile} class="download-btn">Download instead</button>
       </div>
-    {:else if fileUrl && isMediaFile(currentFileData.name)}
-      {#if getFileType(currentFileData.name) === 'image'}
+    {:else if fileUrl}
+      {#if currentFileType === 'image'}
         <img src={fileUrl} alt={currentFileData.name} />
-      {:else if getFileType(currentFileData.name) === 'video'}
+      {:else if currentFileType === 'video'}
         <video src={fileUrl} controls>
           <track kind="captions">
           Your browser does not support the video tag.
         </video>
-      {:else if getFileType(currentFileData.name) === 'audio'}
+      {:else if currentFileType === 'audio'}
         <div class="audio-container">
           <div class="audio-info">
             <h4>{currentFileData.name}</h4>
@@ -360,18 +320,18 @@
             Your browser does not support the audio tag.
           </audio>
         </div>
+      {:else}
+        <div class="status-message">
+          <div class="unsupported-icon">📄</div>
+          <h3>File type not supported</h3>
+          <p>This file cannot be previewed in the browser.</p>
+          <p class="file-details">
+            <strong>{currentFileData.name}</strong><br>
+            {currentFileData.size ? readableSize(currentFileData.size) : 'Unknown size'}
+          </p>
+          <button onclick={downloadFile} class="download-btn">Download file</button>
+        </div>
       {/if}
-    {:else}
-      <div class="status-message">
-        <div class="unsupported-icon">📄</div>
-        <h3>File type not supported</h3>
-        <p>This file cannot be previewed in the browser.</p>
-        <p class="file-details">
-          <strong>{currentFileData.name}</strong><br>
-          {currentFileData.size ? readableSize(currentFileData.size) : 'Unknown size'}
-        </p>
-        <button onclick={downloadFile} class="download-btn">Download file</button>
-      </div>
     {/if}
   </div>
 </div>
