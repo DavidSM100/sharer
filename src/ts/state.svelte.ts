@@ -2,9 +2,10 @@ import type { ReceivedStatusUpdate } from "@webxdc/types";
 import type { FileData, FileInfo, FilePart, FilesData } from "./types";
 import localforage from "localforage";
 
-export { filesData };
+export { filesData, viewerFileId };
 
 let filesData: FilesData = $state({});
+let viewerFileId: { id: string | null } = $state({ id: null });
 
 window.webxdc.setUpdateListener(handleUpdate);
 function handleUpdate(update: ReceivedStatusUpdate<FileInfo | FilePart>) {

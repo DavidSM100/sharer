@@ -2,14 +2,13 @@
   import localforage from "localforage";
   import { readableSize, exportFileToChat } from "../ts/utils";
   import type { Parts } from "../ts/types";
-  import { filesData as allFiles } from "../ts/state.svelte";
+  import { filesData as allFiles, viewerFileId } from "../ts/state.svelte";
 
-  let { id, onClose }: {id: string, onClose: Function} = $props();
   let fileUrl: string | null = $state(null);
   let loading = $state(true);
   let error: string | null = $state(null);
-  let currentFileId = $state(id);
-  let currentFileData = $derived(allFiles[currentFileId] || {});
+  let currentFileId = $state(viewerFileId.id);
+  let currentFileData = $derived(allFiles[currentFileId!] || {});
   let currentFileType = $derived(currentFileData.mimeType?.split("/")[0]);
   let showNavigationHint = $state(false);
 
@@ -113,7 +112,7 @@
         length: 0
       };
 
-      const db = localforage.createInstance({ name: currentFileId });
+      const db = localforage.createInstance({ name: currentFileId! });
       await db.iterate((val: string, i: string) => {
         parts[Number(i)] = val;
         parts.length++;
@@ -172,7 +171,7 @@
         return;
       }
       
-      await exportFileToChat(currentFileId, currentFileData);
+      await exportFileToChat(currentFileId!, currentFileData);
     } catch (err: any) {
       console.error("Error downloading file:", err);
       alert("Failed to download file: " + err.message);
@@ -183,7 +182,7 @@
     if (fileUrl) {
       URL.revokeObjectURL(fileUrl);
     }
-    onClose();
+    viewerFileId.id = null;
   }
 
   function handleKeydown(event: KeyboardEvent) {

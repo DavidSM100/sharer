@@ -4,8 +4,9 @@
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import Loader from "./Loader.svelte";
   import type { FileData } from "../ts/types";
+  import { viewerFileId } from "../ts/state.svelte";
 
-  let { id, data, onViewFile }: {id: string, data: FileData, onViewFile: Function} = $props();
+  let { id, data }: {id: string, data: FileData} = $props();
   let exportingFile: boolean = $state(false);
 
   async function exportFile() {
@@ -27,8 +28,8 @@
       return;
     }
     
-    if (data.name && data.totalParts && onViewFile) {
-      onViewFile(id);
+    if (data.name && data.totalParts) {
+      viewerFileId.id = id;
     }
   }
 
