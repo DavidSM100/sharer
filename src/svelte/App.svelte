@@ -3,8 +3,8 @@
   import chevronUpImg from "../assets/chevron-up.svg";
   import Send from "./Send.svelte";
   import Receive from "./Receive.svelte";
-  import { showSendDiv } from "../ts/state.svelte";
-
+  import { showSendDiv, viewerFileId } from "../ts/state.svelte";
+  import FileViewer from "./FileViewer.svelte";
 </script>
 
 <main>
@@ -15,11 +15,15 @@
     </button>
   </div>
 
-  {#if showSendDiv.show}
-    <Send />
-  {/if}
+  {#if viewerFileId.id}
+    <FileViewer />
+  {:else}
+    {#if showSendDiv.show}
+      <Send />
+    {/if}
 
-  <Receive />
+    <Receive />
+  {/if}
 </main>
 
 <style>

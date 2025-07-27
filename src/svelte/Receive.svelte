@@ -1,7 +1,6 @@
 <script lang="ts">
   import FileCard from "./FileCard.svelte";
-  import FileViewer from "./FileViewer.svelte";
-  import { filesData, viewerFileId } from "../ts/state.svelte";
+  import { filesData } from "../ts/state.svelte";
 </script>
 
 <main>
@@ -9,7 +8,3 @@
     <FileCard {id} {data} />
   {/each}
 </main>
-
-{#if viewerFileId.id}
-  <FileViewer />
-{/if}
