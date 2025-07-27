@@ -1,6 +1,5 @@
 <script lang="ts">
-  import plusImg from "../assets/plus.svg";
-  import chevronUpImg from "../assets/chevron-up.svg";
+  import { PlusIcon, ChevronUpIcon } from "@lucide/svelte";
   import Send from "./Send.svelte";
   import Receive from "./Receive.svelte";
   import { showSendDiv, viewerFileId } from "../ts/state.svelte";
@@ -10,8 +9,11 @@
 <main>
   <div>
     <button onclick={() => (showSendDiv.show = !showSendDiv.show)}>
-      <img hidden={showSendDiv.show} src={plusImg} alt="plus" />
-      <img hidden={!showSendDiv.show} src={chevronUpImg} alt="hide" />
+      {#if showSendDiv.show}
+        <ChevronUpIcon color="#a344ceff"/>
+      {:else}
+        <PlusIcon color="#a344ceff"/>
+      {/if}
     </button>
   </div>
 

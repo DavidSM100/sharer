@@ -9,7 +9,6 @@ export default defineConfig({
   build: {
     outDir: "../dist",
     emptyOutDir: true,
-    assetsInlineLimit: 0,
     reportCompressedSize: false,
   },
   plugins: [svelte(), buildXDC(), eruda(), mockWebxdc()],

@@ -3,6 +3,7 @@
   import { readableSize, exportFileToChat } from "../ts/utils";
   import type { Parts } from "../ts/types";
   import { filesData as allFiles, viewerFileId } from "../ts/state.svelte";
+  import { XIcon } from "@lucide/svelte";
 
   let fileUrl: string | null = $state(null);
   let loading = $state(true);
@@ -263,7 +264,9 @@
       {:else}
         <button disabled class="download-btn disabled">Downloading...</button>
       {/if}
-      <button onclick={handleClose} class="close-btn">×</button>
+      <button onclick={handleClose} class="close-btn">
+        <XIcon />
+      </button>
     </div>
   </div>
 

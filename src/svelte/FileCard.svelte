@@ -1,6 +1,6 @@
 <script lang="ts">
   import { readableSize, toPercent, exportFileToChat } from "../ts/utils";
-  import downloadImg from "../assets/download.svg";
+  import { DownloadIcon } from "@lucide/svelte";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import Loader from "./Loader.svelte";
   import type { FileData } from "../ts/types";
@@ -49,7 +49,7 @@
         <Loader />
       {:else}
         <button onclick={exportFile}>
-          <img src={downloadImg} alt="download" />
+          <DownloadIcon color="#a344ceff"/>
         </button>
       {/if}
     {:else if data.totalParts}
