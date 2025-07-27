@@ -1,17 +1,19 @@
-<script>
-  import { readableSize, toPercent, exportFileToChat } from "../js/utils.js";
+<script lang="ts">
+  import { readableSize, toPercent, exportFileToChat } from "../ts/utils";
   import downloadImg from "../assets/download.svg";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import Loader from "./Loader.svelte";
+  import type { FileData } from "../ts/types";
 
-  let { id, data, onViewFile } = $props();
-  let exportingFile = $state(false);
+  let { id, data, onViewFile }: {id: string, data: FileData, onViewFile: Function} = $props();
+  let exportingFile: boolean = $state(false);
 
   async function exportFile() {
     exportingFile = true;
+    
     try {
       await exportFileToChat(id, data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error exporting file:", err);
       alert("Failed to export file: " + err.message);
     } finally {
@@ -19,9 +21,9 @@
     }
   }
 
-  function handleCardClick(event) {
+  function handleCardClick(event: MouseEvent) {
     // Don't open viewer if user clicked on download button
-    if (event.target.closest('button')) {
+    if ((event.target! as HTMLDivElement).closest('button')) {
       return;
     }
     
@@ -30,9 +32,10 @@
     }
   }
 
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
+      //@ts-ignore
       handleCardClick(event);
     }
   }

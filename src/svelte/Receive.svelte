@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
+  import type { ReceivedStatusUpdate } from "@webxdc/types";
+  import type { FileInfo, FilePart, FilesData } from "../ts/types";
   import FileCard from "./FileCard.svelte";
   import FileViewer from "./FileViewer.svelte";
   import localforage from "localforage";
 
-  let filesData = $state({});
-  let viewerFileId = $state(null);
+  let filesData: FilesData = $state({});
+  let viewerFileId: string | null = $state(null);
 
-  function openFileViewer(id) {
+  function openFileViewer(id: string) {
     viewerFileId = id;
   }
 
@@ -14,7 +16,7 @@
     viewerFileId = null;
   }
 
-  window.webxdc.setUpdateListener(async (update) => {
+  window.webxdc.setUpdateListener(async (update: ReceivedStatusUpdate<FileInfo | FilePart>) => {
     const id = update.payload.id;
     filesData[id] = filesData[id] || {};
     const fileData = filesData[id];

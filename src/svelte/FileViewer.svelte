@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
   import localforage from "localforage";
-  import { readableSize, exportFileToChat } from "../js/utils.js";
+  import { readableSize, exportFileToChat } from "../ts/utils";
+  import type { FilesData, Parts, FileData } from "../ts/types";
 
-  let { id, onClose, allFiles = {} } = $props();
-  let fileUrl = $state(null);
+  let { id, onClose, allFiles = {} }: {id: string, onClose: Function, allFiles: FilesData} = $props();
+  let fileUrl: string | null = $state(null);
   let loading = $state(true);
-  let error = $state(null);
+  let error: string | null = $state(null);
   let currentFileId = $state(id);
   let currentFileData = $derived(allFiles[currentFileId] || {});
   let currentFileType = $derived(currentFileData.mimeType?.split("/")[0]);
@@ -25,14 +26,14 @@
   let touchStartX = 0;
   let touchStartY = 0;
 
-  function handleTouchStart(event) {
+  function handleTouchStart(event: TouchEvent) {
     if (event.touches.length === 1) {
       touchStartX = event.touches[0].clientX;
       touchStartY = event.touches[0].clientY;
     }
   }
 
-  function handleTouchEnd(event) {
+  function handleTouchEnd(event: TouchEvent) {
     if (event.changedTouches.length === 1) {
       const deltaX = event.changedTouches[0].clientX - touchStartX;
       const deltaY = Math.abs(event.changedTouches[0].clientY - touchStartY);
@@ -48,9 +49,9 @@
     }
   }
 
-  function handleContentClick(event) {
+  function handleContentClick(event: MouseEvent) {
     // Don't navigate if user clicked on controls or interactive elements
-    if (event.target.closest('button, video, audio, iframe, .viewer-header, .nav-arrow')) {
+    if ((event.target! as HTMLDivElement).closest('button, video, audio, iframe, .viewer-header, .nav-arrow')) {
       return;
     }
 
@@ -58,7 +59,7 @@
       return;
     }
 
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = (event.currentTarget! as HTMLButtonElement).getBoundingClientRect();
     const clickX = event.clientX - rect.left;
     const width = rect.width;
     
@@ -87,7 +88,7 @@
     }
   }
 
-  function switchToFile(newId) {
+  function switchToFile(newId: string) {
     if (fileUrl) {
       URL.revokeObjectURL(fileUrl);
       fileUrl = null;
@@ -107,34 +108,35 @@
         return;
       }
 
-      let parts = {};
-      let partsCount = 0;
+      let parts: Parts = {
+        length: 0
+      };
 
       const db = localforage.createInstance({ name: currentFileId });
-      await db.iterate((val, i) => {
-        parts[i] = val;
-        partsCount++;
+      await db.iterate((val: string, i: string) => {
+        parts[Number(i)] = val;
+        parts.length++;
       });
 
-      if (partsCount !== currentFileData.totalParts && currentFileData.parts) {
+      if (parts.length !== currentFileData.totalParts && currentFileData.parts) {
         Object.entries(currentFileData.parts).forEach(([i, val]) => {
           if (!parts.hasOwnProperty(i) && val && val !== "") {
-            parts[i] = val;
-            partsCount++;
+            parts[Number(i)] = val;
+            parts.length++;
           }
         });
       }
 
-      if (partsCount !== currentFileData.totalParts) {
-        error = `Could not load all file parts. Found ${partsCount} of ${currentFileData.totalParts} parts.`;
+      if (parts.length !== currentFileData.totalParts) {
+        error = `Could not load all file parts. Found ${parts.length} of ${currentFileData.totalParts} parts.`;
         loading = false;
         return;
       }
 
       const partsArray = [];
       for (let i = 0; i < currentFileData.totalParts; i++) {
-        if (parts.hasOwnProperty(i.toString()) && parts[i.toString()]) {
-          partsArray[i] = parts[i.toString()];
+        if (parts.hasOwnProperty(i) && parts[i]) {
+          partsArray[i] = parts[i];
         } else if (parts.hasOwnProperty(i) && parts[i]) {
           partsArray[i] = parts[i];
         } else {
@@ -155,7 +157,7 @@
       const blob = new Blob([bytes], { type: currentFileData.mimeType });
       fileUrl = URL.createObjectURL(blob);
       loading = false;
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error loading file:", err);
       error = "Failed to load file: " + err.message;
       loading = false;
@@ -170,7 +172,7 @@
       }
       
       await exportFileToChat(currentFileId, currentFileData);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error downloading file:", err);
       alert("Failed to download file: " + err.message);
     }
@@ -183,7 +185,7 @@
     onClose();
   }
 
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       handleClose();
     } else if (event.key === 'ArrowLeft' && canNavigatePrev) {
@@ -195,9 +197,10 @@
     }
   }
 
-  function handleContentKeydown(event) {
+  function handleContentKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
+      //@ts-ignore
       handleContentClick(event);
     }
   }

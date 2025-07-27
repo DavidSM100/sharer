@@ -1,16 +1,18 @@
-<script>
-  import { splitString, readableSize, blobToBase64 } from "../js/utils.js";
+<script lang="ts">
+  import type { SendingStatusUpdate } from "@webxdc/types";
+  import { splitString, readableSize, blobToBase64 } from "../ts/utils";
   import Loader from "./Loader.svelte";
+  import type { FileInfo, FilePart } from "../ts/types";
 
-  let selectedPartSize = $state(localStorage.getItem("partsize") || "6");
-  let selectedFile = $state(null);
-  let sendingFile = $state(false);
+  let selectedPartSize: string = $state(localStorage.getItem("partsize") || "6");
+  let selectedFile: File | null = $state(null);
+  let sendingFile: boolean = $state(false);
 
-  async function selectFile() {
+  async function selectFile(): Promise<void> {
     selectedFile = (await window.webxdc.importFiles({}))[0];
   }
 
-  async function sendFile() {
+  async function sendFile(): Promise<void> {
     const file = selectedFile;
     selectedFile = null;
     if (!file) return;
@@ -26,8 +28,9 @@
     const parts = splitString(base64File, partSize);
 
     const partsUpdates = parts.map((part, i) => {
-      let update = {
+      let update: SendingStatusUpdate<FilePart> = {
         payload: {
+          type: "part",
           id: id,
           i: i,
           part: part,
@@ -43,7 +46,7 @@
     });
 
     const info = `${sender}: "${name}"`;
-    const infoUpdate = {
+    const infoUpdate: SendingStatusUpdate<FileInfo> = {
       payload: {
         type: "info",
         id: id,
@@ -59,7 +62,7 @@
       },
     };
 
-    window.webxdc.sendUpdate(infoUpdate, info);
+    window.webxdc.sendUpdate(infoUpdate, '');
 
     let nextPart = 0;
     const interval = setInterval(() => {
@@ -67,7 +70,7 @@
       ++nextPart;
       const number = update.payload.i + 1;
       const total = parts.length;
-      window.webxdc.sendUpdate(update, `${number}/${total}, ${name}`);
+      window.webxdc.sendUpdate(update, '');
       if (number === total) {
         sendingFile = false;
         clearInterval(interval);

@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
   import plusImg from "../assets/plus.svg";
   import chevronUpImg from "../assets/chevron-up.svg";
   import Send from "./Send.svelte";
   import Receive from "./Receive.svelte";
 
-  let showSendDiv = $state(false);
+  let showSendDiv: boolean = $state(false);
 </script>
 
 <main>

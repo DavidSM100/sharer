@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+// @ts-expect-error
 import { buildXDC, mockWebxdc, eruda } from "@webxdc/vite-plugins";
 
 // https://vite.dev/config/
