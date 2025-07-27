@@ -3,19 +3,19 @@
   import chevronUpImg from "../assets/chevron-up.svg";
   import Send from "./Send.svelte";
   import Receive from "./Receive.svelte";
+  import { showSendDiv } from "../ts/state.svelte";
 
-  let showSendDiv: boolean = $state(false);
 </script>
 
 <main>
   <div>
-    <button onclick={() => (showSendDiv = !showSendDiv)}>
-      <img hidden={showSendDiv} src={plusImg} alt="plus" />
-      <img hidden={!showSendDiv} src={chevronUpImg} alt="hide" />
+    <button onclick={() => (showSendDiv.show = !showSendDiv.show)}>
+      <img hidden={showSendDiv.show} src={plusImg} alt="plus" />
+      <img hidden={!showSendDiv.show} src={chevronUpImg} alt="hide" />
     </button>
   </div>
 
-  {#if showSendDiv}
+  {#if showSendDiv.show}
     <Send />
   {/if}
 
