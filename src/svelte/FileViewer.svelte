@@ -1,9 +1,10 @@
 <script lang="ts">
   import localforage from "localforage";
   import { readableSize, exportFileToChat } from "../ts/utils";
-  import type { FilesData, Parts, FileData } from "../ts/types";
+  import type { Parts } from "../ts/types";
+  import { filesData as allFiles } from "../ts/state.svelte";
 
-  let { id, onClose, allFiles = {} }: {id: string, onClose: Function, allFiles: FilesData} = $props();
+  let { id, onClose }: {id: string, onClose: Function} = $props();
   let fileUrl: string | null = $state(null);
   let loading = $state(true);
   let error: string | null = $state(null);
