@@ -7,8 +7,7 @@
     "serve": "vite --port 3000",
     "webxdc-dev": "webxdc-dev run http://localhost:3000",
     "build": "vite build",
-    "preview": "vite preview",
-    "webxdc-dev-preview": "webxdc-dev run ./dist"
+    "preview": "webxdc-dev run ./dist-xdc/app.xdc"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
