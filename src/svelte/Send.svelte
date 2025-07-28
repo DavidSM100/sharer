@@ -1,20 +1,16 @@
 <script lang="ts">
   import type { SendingStatusUpdate } from "@webxdc/types";
-  import { splitString, readableSize, blobToBase64 } from "../ts/utils";
+  import { splitString, blobToBase64 } from "../ts/utils";
   import type { FileInfo, FilePart } from "../ts/types";
 
   let selectedPartSize: string = $state(localStorage.getItem("partsize") || "6");
-  let selectedFile: File | null = $state(null);
+  let selectedFiles: FileList | undefined = $state();
   let sendingFile: boolean = $state(false);
 
-  async function selectFile(): Promise<void> {
-    selectedFile = (await window.webxdc.importFiles({}))[0];
-  }
 
   async function sendFile(): Promise<void> {
-    const file = selectedFile;
-    selectedFile = null;
-    if (!file) return;
+    if (!selectedFiles?.length) return;
+    const file = selectedFiles[0];
     sendingFile = true;
 
     const name = file.name;
@@ -103,26 +99,12 @@
 
   <div class="flex justify-between items-center max-w-xl">
     <div>
-      <span><b>File</b></span>
-      <p>
-        <small>
-          {#if selectedFile}
-            {selectedFile.name}, {readableSize(selectedFile.size)}.
-          {:else}
-            Select the file to send.
-          {/if}
-        </small>
-      </p>
+      <b>File</b>
+      <div>
+        <small>Select the file to send</small>
+      </div>
     </div>
-    <div>
-      <button class="btn" onclick={selectFile}>
-        {#if selectedFile}
-          Change
-        {:else}
-          Select
-        {/if}
-      </button>
-    </div>
+    <input type="file" class="file-input" bind:files={selectedFiles}/>
   </div>
 
   <div>
