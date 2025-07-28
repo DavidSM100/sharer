@@ -42,14 +42,14 @@
   }
 </script>
 
-<div onclick={handleCardClick} onkeydown={handleKeydown} role="button" tabindex="0" class="file-card" class:clickable={data.name && data.totalParts}>
+<div onclick={handleCardClick} onkeydown={handleKeydown} role="button" tabindex="0" class="card card-border shadow-xl file-card" class:clickable={data.name && data.totalParts}>
   <div class="download">
     {#if data.receivedParts === data.totalParts}
       {#if exportingFile}
         <Loader />
       {:else}
-        <button onclick={exportFile}>
-          <DownloadIcon color="#a344ceff"/>
+        <button class="btn" onclick={exportFile}>
+          <DownloadIcon />
         </button>
       {/if}
     {:else if data.totalParts}
@@ -82,11 +82,11 @@
 <style>
   .file-card {
     display: flex;
+    flex-direction: row;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 5px;
     padding: 3px;
-    background-color: #eee;
     align-items: center;
   }
 
@@ -113,35 +113,9 @@
     margin-bottom: 2px;
   }
 
-  button {
-    background-color: #ddd;
-  }
-
-  button:hover {
-    background-color: #ccc;
-  }
-
-  button:active {
-    background-color: #bbb;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .file-card {
-      background-color: #333;
-    }
-    
+  @media (prefers-color-scheme: dark) {    
     .file-card.clickable:hover {
       background-color: #444;
-    }
-    
-    button {
-      background-color: #444;
-    }
-    button:hover {
-      background-color: #555;
-    }
-    button:active {
-      background-color: #666;
     }
   }
 </style>

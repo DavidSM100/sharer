@@ -8,11 +8,11 @@
 
 <main>
   <div>
-    <button onclick={() => (showSendDiv.show = !showSendDiv.show)}>
+    <button class="btn" onclick={() => (showSendDiv.show = !showSendDiv.show)}>
       {#if showSendDiv.show}
-        <ChevronUpIcon color="#a344ceff"/>
+        <ChevronUpIcon/>
       {:else}
-        <PlusIcon color="#a344ceff"/>
+        <PlusIcon/>
       {/if}
     </button>
   </div>
@@ -27,29 +27,3 @@
     <Receive />
   {/if}
 </main>
-
-<style>
-  button {
-    background-color: #eee;
-  }
-
-  button:hover {
-    background-color: #ddd;
-  }
-
-  button:active {
-    background-color: #ccc;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    button {
-      background-color: #333;
-    }
-    button:hover {
-      background-color: #444;
-    }
-    button:active {
-      background-color: #555;
-    }
-  }
-</style>
