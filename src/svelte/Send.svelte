@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { SendingStatusUpdate } from "@webxdc/types";
   import { splitString, readableSize, blobToBase64 } from "../ts/utils";
-  import Loader from "./Loader.svelte";
   import type { FileInfo, FilePart } from "../ts/types";
 
   let selectedPartSize: string = $state(localStorage.getItem("partsize") || "6");
@@ -129,7 +128,7 @@
   <div>
     <button onclick={sendFile} class="btn btn-primary">Send File</button>
     {#if sendingFile}
-      <Loader />
+      <span class="loading"></span>
     {/if}
   </div>
 

@@ -2,7 +2,6 @@
   import { readableSize, toPercent, exportFileToChat } from "../ts/utils";
   import { DownloadIcon } from "@lucide/svelte";
   import CircularProgressBar from "./CircularProgressBar.svelte";
-  import Loader from "./Loader.svelte";
   import type { FileData } from "../ts/types";
   import { viewerFileId } from "../ts/state.svelte";
 
@@ -46,7 +45,7 @@
   <div class="download">
     {#if data.receivedParts === data.totalParts}
       {#if exportingFile}
-        <Loader />
+        <span class="loading"></span>
       {:else}
         <button class="btn" onclick={exportFile}>
           <DownloadIcon />
