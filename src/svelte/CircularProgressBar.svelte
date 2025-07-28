@@ -6,7 +6,6 @@
   class="radial-progress"
   style="--value: {progress};"
   role="progressbar"
-  aria-valuenow={progress}
->
+  aria-valuenow={progress}>
   {text}
 </div>

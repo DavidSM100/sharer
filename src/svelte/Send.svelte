@@ -3,10 +3,11 @@
   import { splitString, blobToBase64 } from "../ts/utils";
   import type { FileInfo, FilePart } from "../ts/types";
 
-  let selectedPartSize: string = $state(localStorage.getItem("partsize") || "6");
+  let selectedPartSize: string = $state(
+    localStorage.getItem("partsize") || "6"
+  );
   let selectedFiles: FileList | undefined = $state();
   let sendingFile: boolean = $state(false);
-
 
   async function sendFile(): Promise<void> {
     if (!selectedFiles?.length) return;
@@ -19,7 +20,7 @@
     const sender = window.webxdc.selfName;
 
     const base64File = await blobToBase64(file);
-    const partSize = Number(selectedPartSize) * (1000 * 1000) / 3 * 4;
+    const partSize = ((Number(selectedPartSize) * (1000 * 1000)) / 3) * 4;
     const parts = splitString(base64File, partSize);
 
     const partsUpdates = parts.map((part, i) => {
@@ -57,7 +58,7 @@
       },
     };
 
-    window.webxdc.sendUpdate(infoUpdate, '');
+    window.webxdc.sendUpdate(infoUpdate, "");
 
     let nextPart = 0;
     const interval = setInterval(() => {
@@ -65,7 +66,7 @@
       ++nextPart;
       const number = update.payload.i + 1;
       const total = parts.length;
-      window.webxdc.sendUpdate(update, '');
+      window.webxdc.sendUpdate(update, "");
       if (number === total) {
         sendingFile = false;
         clearInterval(interval);
@@ -74,8 +75,8 @@
   }
 </script>
 
-<main class="flex flex-col gap-2 mt-1.5">
-  <div class="flex justify-between items-center max-w-xl">
+<main class="mt-1.5 flex flex-col gap-2">
+  <div class="flex max-w-xl items-center justify-between">
     <div>
       <span><b>Part Size</b></span>
       <p>
@@ -85,8 +86,7 @@
     <select
       class="select"
       bind:value={selectedPartSize}
-      onchange={() => localStorage.setItem("partsize", selectedPartSize)}
-    >
+      onchange={() => localStorage.setItem("partsize", selectedPartSize)}>
       <option value="0.3">0.3 MB</option>
       <option value="0.6">0.6 MB</option>
       <option value="1.5">1.5 MB</option>
@@ -97,14 +97,14 @@
     </select>
   </div>
 
-  <div class="flex justify-between items-center max-w-xl">
+  <div class="flex max-w-xl items-center justify-between">
     <div>
       <b>File</b>
       <div>
         <small>Select the file to send</small>
       </div>
     </div>
-    <input type="file" class="file-input" bind:files={selectedFiles}/>
+    <input type="file" class="file-input" bind:files={selectedFiles} />
   </div>
 
   <div>

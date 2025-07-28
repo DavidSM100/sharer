@@ -5,12 +5,12 @@
   import type { FileData } from "../ts/types";
   import { viewerFileId } from "../ts/state.svelte";
 
-  let { id, data }: {id: string, data: FileData} = $props();
+  let { id, data }: { id: string; data: FileData } = $props();
   let exportingFile: boolean = $state(false);
 
   async function exportFile() {
     exportingFile = true;
-    
+
     try {
       await exportFileToChat(id, data);
     } catch (err: any) {
@@ -23,17 +23,17 @@
 
   function handleCardClick(event: MouseEvent) {
     // Don't open viewer if user clicked on download button
-    if ((event.target! as HTMLDivElement).closest('button')) {
+    if ((event.target! as HTMLDivElement).closest("button")) {
       return;
     }
-    
+
     if (data.name && data.totalParts) {
       viewerFileId.id = id;
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       //@ts-ignore
       handleCardClick(event);
@@ -41,7 +41,13 @@
   }
 </script>
 
-<div onclick={handleCardClick} onkeydown={handleKeydown} role="button" tabindex="0" class="card card-border shadow-xl file-card" class:clickable={data.name && data.totalParts}>
+<div
+  onclick={handleCardClick}
+  onkeydown={handleKeydown}
+  role="button"
+  tabindex="0"
+  class="card card-border file-card shadow-xl"
+  class:clickable={data.name && data.totalParts}>
   <div class="download">
     {#if data.receivedParts === data.totalParts}
       {#if exportingFile}
@@ -54,8 +60,7 @@
     {:else if data.totalParts}
       <CircularProgressBar
         progress={toPercent(data.receivedParts || 0, data.totalParts)}
-        text={`${data.receivedParts || 0}/${data.totalParts}`}
-      />
+        text={`${data.receivedParts || 0}/${data.totalParts}`} />
     {/if}
   </div>
 
@@ -112,7 +117,7 @@
     margin-bottom: 2px;
   }
 
-  @media (prefers-color-scheme: dark) {    
+  @media (prefers-color-scheme: dark) {
     .file-card.clickable:hover {
       background-color: #444;
     }

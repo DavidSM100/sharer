@@ -10,9 +10,9 @@
   <div>
     <button class="btn" onclick={() => (showSendDiv.show = !showSendDiv.show)}>
       {#if showSendDiv.show}
-        <ChevronUpIcon/>
+        <ChevronUpIcon />
       {:else}
-        <PlusIcon/>
+        <PlusIcon />
       {/if}
     </button>
   </div>

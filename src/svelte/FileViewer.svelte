@@ -18,11 +18,15 @@
       .filter(([_, fileData]) => fileData.receivedParts === fileData.totalParts)
       .map(([fileId, fileData]) => ({ id: fileId, data: fileData }))
   );
-  
-  const currentIndex = $derived(completeFiles.findIndex(file => file.id === currentFileId));
+
+  const currentIndex = $derived(
+    completeFiles.findIndex((file) => file.id === currentFileId)
+  );
   const canNavigatePrev = $derived(currentIndex > 0);
   const canNavigateNext = $derived(currentIndex < completeFiles.length - 1);
-  const isCurrentFileComplete = $derived(currentFileData.receivedParts === currentFileData.totalParts);
+  const isCurrentFileComplete = $derived(
+    currentFileData.receivedParts === currentFileData.totalParts
+  );
 
   let touchStartX = 0;
   let touchStartY = 0;
@@ -38,7 +42,7 @@
     if (event.changedTouches.length === 1) {
       const deltaX = event.changedTouches[0].clientX - touchStartX;
       const deltaY = Math.abs(event.changedTouches[0].clientY - touchStartY);
-      
+
       // Only trigger swipe if horizontal movement is significant and vertical is minimal
       if (Math.abs(deltaX) > 50 && deltaY < 100) {
         if (deltaX > 0 && canNavigatePrev) {
@@ -52,7 +56,11 @@
 
   function handleContentClick(event: MouseEvent) {
     // Don't navigate if user clicked on controls or interactive elements
-    if ((event.target! as HTMLDivElement).closest('button, video, audio, iframe, .viewer-header, .nav-arrow')) {
+    if (
+      (event.target! as HTMLDivElement).closest(
+        "button, video, audio, iframe, .viewer-header, .nav-arrow"
+      )
+    ) {
       return;
     }
 
@@ -60,14 +68,16 @@
       return;
     }
 
-    const rect = (event.currentTarget! as HTMLButtonElement).getBoundingClientRect();
+    const rect = (
+      event.currentTarget! as HTMLButtonElement
+    ).getBoundingClientRect();
     const clickX = event.clientX - rect.left;
     const width = rect.width;
-    
+
     // Define click zones: left 30%, right 30%
     const leftZone = width * 0.3;
     const rightZone = width * 0.7;
-    
+
     if (clickX < leftZone && canNavigatePrev) {
       navigateToPrev();
     } else if (clickX > rightZone && canNavigateNext) {
@@ -94,7 +104,7 @@
       URL.revokeObjectURL(fileUrl);
       fileUrl = null;
     }
-    
+
     currentFileId = newId;
     loadFile();
   }
@@ -110,7 +120,7 @@
       }
 
       let parts: Parts = {
-        length: 0
+        length: 0,
       };
 
       const db = localforage.createInstance({ name: currentFileId! });
@@ -119,7 +129,10 @@
         parts.length++;
       });
 
-      if (parts.length !== currentFileData.totalParts && currentFileData.parts) {
+      if (
+        parts.length !== currentFileData.totalParts &&
+        currentFileData.parts
+      ) {
         Object.entries(currentFileData.parts).forEach(([i, val]) => {
           if (!parts.hasOwnProperty(i) && val && val !== "") {
             parts[Number(i)] = val;
@@ -168,10 +181,12 @@
   async function downloadFile() {
     try {
       if (currentFileData.receivedParts !== currentFileData.totalParts) {
-        alert(`File is still downloading. ${currentFileData.receivedParts || 0} of ${currentFileData.totalParts} parts received.`);
+        alert(
+          `File is still downloading. ${currentFileData.receivedParts || 0} of ${currentFileData.totalParts} parts received.`
+        );
         return;
       }
-      
+
       await exportFileToChat(currentFileId!, currentFileData);
     } catch (err: any) {
       console.error("Error downloading file:", err);
@@ -187,19 +202,19 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       handleClose();
-    } else if (event.key === 'ArrowLeft' && canNavigatePrev) {
+    } else if (event.key === "ArrowLeft" && canNavigatePrev) {
       event.preventDefault();
       navigateToPrev();
-    } else if (event.key === 'ArrowRight' && canNavigateNext) {
+    } else if (event.key === "ArrowRight" && canNavigateNext) {
       event.preventDefault();
       navigateToNext();
     }
   }
 
   function handleContentKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       //@ts-ignore
       handleContentClick(event);
@@ -208,18 +223,21 @@
 
   loadFile();
 
-  $effect(() => {    
-    if (!fileUrl && !loading && !error && 
-        currentFileData.receivedParts === currentFileData.totalParts) {
-
+  $effect(() => {
+    if (
+      !fileUrl &&
+      !loading &&
+      !error &&
+      currentFileData.receivedParts === currentFileData.totalParts
+    ) {
       // localforage does not support reactivity so need to wait till `Receive.svelte` saves data
-      // in localforage. could be fixed by using implementing svelte stores wrapper over localforage      
+      // in localforage. could be fixed by using implementing svelte stores wrapper over localforage
       setTimeout(() => {
         loadFile();
       }, 1000);
     }
   });
-      
+
   $effect(() => {
     if (completeFiles.length > 1) {
       showNavigationHint = true;
@@ -232,30 +250,37 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div 
-  class="viewer-overlay" 
+<div
+  class="viewer-overlay"
   ontouchstart={handleTouchStart}
-  ontouchend={handleTouchEnd}
->
+  ontouchend={handleTouchEnd}>
   {#if canNavigatePrev && isCurrentFileComplete}
-    <button class="nav-arrow nav-prev" onclick={navigateToPrev} aria-label="Previous file">
+    <button
+      class="nav-arrow nav-prev"
+      onclick={navigateToPrev}
+      aria-label="Previous file">
       ‹
     </button>
   {/if}
-  
+
   {#if canNavigateNext && isCurrentFileComplete}
-    <button class="nav-arrow nav-next" onclick={navigateToNext} aria-label="Next file">
+    <button
+      class="nav-arrow nav-next"
+      onclick={navigateToNext}
+      aria-label="Next file">
       ›
     </button>
   {/if}
 
   <div class="viewer-header">
     <div class="file-info">
-      <h3>{currentFileData.name || 'Unknown file'}</h3>
+      <h3>{currentFileData.name || "Unknown file"}</h3>
       <p>
-        {currentFileData.sender ? `From: ${currentFileData.sender}` : ''} 
-        {currentFileData.size ? ` • ${readableSize(currentFileData.size)}` : ''}
-        {completeFiles.length > 1 ? ` • ${currentIndex + 1} of ${completeFiles.length}` : ''}
+        {currentFileData.sender ? `From: ${currentFileData.sender}` : ""}
+        {currentFileData.size ? ` • ${readableSize(currentFileData.size)}` : ""}
+        {completeFiles.length > 1
+          ? ` • ${currentIndex + 1} of ${completeFiles.length}`
+          : ""}
       </p>
     </div>
     <div class="actions">
@@ -272,19 +297,20 @@
 
   {#if showNavigationHint && completeFiles.length > 1 && isCurrentFileComplete}
     <div class="navigation-hint">
-      <p>💡 Click left or right side to navigate • Use arrow keys • Swipe on mobile</p>
+      <p>
+        💡 Click left or right side to navigate • Use arrow keys • Swipe on
+        mobile
+      </p>
     </div>
   {/if}
 
-  <div 
-    class="viewer-content" 
+  <div
+    class="viewer-content"
     onclick={handleContentClick}
     onkeydown={handleContentKeydown}
     role="button"
     tabindex="0"
-    aria-label="File viewer - click left or right side to navigate"
-  >
-
+    aria-label="File viewer - click left or right side to navigate">
     {#if loading}
       <div class="status-message">
         <div class="loading-spinner"></div>
@@ -294,33 +320,39 @@
       <div class="status-message">
         <h3>Downloading file...</h3>
         <p>
-          {currentFileData.receivedParts || 0} of {currentFileData.totalParts} parts received
+          {currentFileData.receivedParts || 0} of {currentFileData.totalParts} parts
+          received
           {#if currentFileData.size}
-            <br><small>({readableSize(currentFileData.size)})</small>
+            <br /><small>({readableSize(currentFileData.size)})</small>
           {/if}
         </p>
-        <p class="download-hint">The file will load automatically when download completes</p>
+        <p class="download-hint">
+          The file will load automatically when download completes
+        </p>
       </div>
     {:else if error}
       <div class="status-message error">
         <div class="error-icon">⚠</div>
         <h3>Cannot display file</h3>
         <p>{error}</p>
-        <button onclick={downloadFile} class="download-btn">Download instead</button>
+        <button onclick={downloadFile} class="download-btn"
+          >Download instead</button>
       </div>
     {:else if fileUrl}
-      {#if currentFileType === 'image'}
+      {#if currentFileType === "image"}
         <img src={fileUrl} alt={currentFileData.name} />
-      {:else if currentFileType === 'video'}
+      {:else if currentFileType === "video"}
         <video src={fileUrl} controls>
-          <track kind="captions">
+          <track kind="captions" />
           Your browser does not support the video tag.
         </video>
-      {:else if currentFileType === 'audio'}
+      {:else if currentFileType === "audio"}
         <div class="audio-container">
           <div class="audio-info">
             <h4>{currentFileData.name}</h4>
-            <p>{currentFileData.sender ? `From: ${currentFileData.sender}` : ''}</p>
+            <p>
+              {currentFileData.sender ? `From: ${currentFileData.sender}` : ""}
+            </p>
           </div>
           <audio src={fileUrl} controls>
             Your browser does not support the audio tag.
@@ -332,10 +364,13 @@
           <h3>File type not supported</h3>
           <p>This file cannot be previewed in the browser.</p>
           <p class="file-details">
-            <strong>{currentFileData.name}</strong><br>
-            {currentFileData.size ? readableSize(currentFileData.size) : 'Unknown size'}
+            <strong>{currentFileData.name}</strong><br />
+            {currentFileData.size
+              ? readableSize(currentFileData.size)
+              : "Unknown size"}
           </p>
-          <button onclick={downloadFile} class="download-btn">Download file</button>
+          <button onclick={downloadFile} class="download-btn"
+            >Download file</button>
         </div>
       {/if}
     {/if}
@@ -365,7 +400,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      transparent 100%
+    );
     color: white;
     z-index: 1001;
   }
@@ -392,10 +432,22 @@
   }
 
   @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-    10% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    90% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
   }
 
   .file-info h3 {
@@ -615,7 +667,8 @@
     margin: 0 auto 20px;
   }
 
-  .error-icon, .unsupported-icon {
+  .error-icon,
+  .unsupported-icon {
     font-size: 48px;
     margin-bottom: 20px;
   }
@@ -629,8 +682,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   @media (max-width: 768px) {
@@ -687,7 +744,8 @@
       font-size: 12px;
     }
 
-    .download-btn, .close-btn {
+    .download-btn,
+    .close-btn {
       padding: 6px 12px;
       font-size: 12px;
     }
