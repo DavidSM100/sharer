@@ -7,11 +7,13 @@
     localStorage.getItem("partsize") || "6"
   );
   let selectedFiles: FileList | undefined = $state();
+  let canSend = $derived(
+    (selectedFiles && selectedFiles.length !== 0) || false
+  );
   let sendingFile: boolean = $state(false);
 
   async function sendFile(): Promise<void> {
-    if (!selectedFiles?.length) return;
-    const file = selectedFiles[0];
+    const file = selectedFiles![0];
     sendingFile = true;
 
     const name = file.name;
@@ -94,7 +96,10 @@
   <input class="file-input" type="file" bind:files={selectedFiles} />
 
   <div>
-    <button onclick={sendFile} class="btn btn-primary">Send File</button>
+    <button
+      disabled={!canSend || sendingFile}
+      onclick={sendFile}
+      class="btn btn-primary">Send File</button>
     {#if sendingFile}
       <span class="loading"></span>
     {/if}
