@@ -76,15 +76,9 @@
 </script>
 
 <main class="mt-1.5 flex flex-col gap-2">
-  <div class="flex max-w-xl items-center justify-between">
-    <div>
-      <span><b>Part Size</b></span>
-      <p>
-        <small>File will be splitted in {selectedPartSize} MB parts.</small>
-      </p>
-    </div>
+  <label class="select">
+    <span class="label">Part Size</span>
     <select
-      class="select"
       bind:value={selectedPartSize}
       onchange={() => localStorage.setItem("partsize", selectedPartSize)}>
       <option value="0.3">0.3 MB</option>
@@ -95,17 +89,9 @@
       <option value="12">12 MB</option>
       <option value="24">24 MB</option>
     </select>
-  </div>
+  </label>
 
-  <div class="flex max-w-xl items-center justify-between">
-    <div>
-      <b>File</b>
-      <div>
-        <small>Select the file to send</small>
-      </div>
-    </div>
-    <input type="file" class="file-input" bind:files={selectedFiles} />
-  </div>
+  <input class="file-input" type="file" bind:files={selectedFiles} />
 
   <div>
     <button onclick={sendFile} class="btn btn-primary">Send File</button>
