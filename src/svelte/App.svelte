@@ -8,7 +8,9 @@
 
 <main>
   <div>
-    <button class="btn" onclick={() => (showSendDiv.show = !showSendDiv.show)}>
+    <button
+      class="btn btn-soft mb-2"
+      onclick={() => (showSendDiv.show = !showSendDiv.show)}>
       {#if showSendDiv.show}
         <ChevronUpIcon />
       {:else}
