@@ -104,6 +104,4 @@
       <span class="loading"></span>
     {/if}
   </div>
-
-  <hr />
 </main>

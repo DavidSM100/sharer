@@ -23,6 +23,7 @@
     {#if showSendDiv.show}
       <Send />
     {/if}
+    <div class="divider m-1"></div>
 
     <Receive />
   {/if}
