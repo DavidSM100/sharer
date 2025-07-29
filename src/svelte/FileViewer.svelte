@@ -1,7 +1,5 @@
 <script lang="ts">
-  import localforage from "localforage";
-  import { readableSize, exportFileToChat } from "../ts/utils";
-  import type { Parts } from "../ts/types";
+  import { readableSize, getFileBase64 } from "../ts/utils";
   import { filesData as allFiles, viewerFileId } from "../ts/state.svelte";
   import { XIcon } from "@lucide/svelte";
 
@@ -119,49 +117,7 @@
         return;
       }
 
-      let parts: Parts = {
-        length: 0,
-      };
-
-      const db = localforage.createInstance({ name: currentFileId! });
-      await db.iterate((val: string, i: string) => {
-        parts[Number(i)] = val;
-        parts.length++;
-      });
-
-      if (
-        parts.length !== currentFileData.totalParts &&
-        currentFileData.parts
-      ) {
-        Object.entries(currentFileData.parts).forEach(([i, val]) => {
-          if (!parts.hasOwnProperty(i) && val && val !== "") {
-            parts[Number(i)] = val;
-            parts.length++;
-          }
-        });
-      }
-
-      if (parts.length !== currentFileData.totalParts) {
-        error = `Could not load all file parts. Found ${parts.length} of ${currentFileData.totalParts} parts.`;
-        loading = false;
-        return;
-      }
-
-      const partsArray = [];
-      for (let i = 0; i < currentFileData.totalParts; i++) {
-        if (parts.hasOwnProperty(i) && parts[i]) {
-          partsArray[i] = parts[i];
-        } else if (parts.hasOwnProperty(i) && parts[i]) {
-          partsArray[i] = parts[i];
-        } else {
-          error = `Missing part ${i} of file`;
-          loading = false;
-          return;
-        }
-      }
-
-      const base64Data = partsArray.join("");
-
+      const base64Data = await getFileBase64(currentFileId!, currentFileData);
       const binaryString = atob(base64Data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
@@ -187,7 +143,13 @@
         return;
       }
 
-      await exportFileToChat(currentFileId!, currentFileData);
+      const base64Data = await getFileBase64(currentFileId!, currentFileData);
+      await window.webxdc.sendToChat({
+        file: {
+          name: currentFileData.name!,
+          base64: base64Data,
+        },
+      });
     } catch (err: any) {
       console.error("Error downloading file:", err);
       alert("Failed to download file: " + err.message);

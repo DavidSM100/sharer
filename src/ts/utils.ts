@@ -1,7 +1,7 @@
 import localforage from "localforage";
-import type { FileData, Parts } from "./types";
+import type { FileData } from "./types";
 
-export { blobToBase64, splitString, readableSize, toPercent, exportFileToChat };
+export { blobToBase64, splitString, readableSize, toPercent, getFileBase64 };
 
 async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -44,7 +44,11 @@ function readableSize(size: number): string {
 
 const toPercent = (part: number, total: number) => (part / total) * 100;
 
-async function exportFileToChat(fileId: string, fileData: FileData) {
+async function getFileBase64(fileId: string, fileData: FileData) {
+  interface Parts {
+    [index: number]: string;
+    length: number;
+  }
   let parts: Parts = { length: 0 };
 
   const db = localforage.createInstance({ name: fileId });
@@ -68,10 +72,5 @@ async function exportFileToChat(fileId: string, fileData: FileData) {
     );
   }
 
-  await window.webxdc.sendToChat({
-    file: {
-      name: fileData.name!,
-      base64: Array.from(parts).join(""),
-    },
-  });
+  return Array.from(parts).join("");
 }

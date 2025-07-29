@@ -32,8 +32,3 @@ export interface FileData {
 export interface FilesData {
   [id: string]: FileData;
 }
-
-export interface Parts {
-  [index: number]: string;
-  length: number;
-}

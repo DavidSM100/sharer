@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { readableSize, toPercent, exportFileToChat } from "../ts/utils";
+  import { readableSize, toPercent, getFileBase64 } from "../ts/utils";
   import { DownloadIcon, PlayIcon } from "@lucide/svelte";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import type { FileData } from "../ts/types";
@@ -18,7 +18,13 @@
     exportingFile = true;
 
     try {
-      await exportFileToChat(id, data);
+      const base64Data = await getFileBase64(id, data);
+      await window.webxdc.sendToChat({
+        file: {
+          name: data.name!,
+          base64: base64Data,
+        },
+      });
     } catch (err: any) {
       console.error("Error exporting file:", err);
       alert("Failed to export file: " + err.message);
