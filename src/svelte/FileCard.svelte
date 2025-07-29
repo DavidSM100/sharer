@@ -39,7 +39,7 @@
     {#if data.receivedParts === data.totalParts}
       <button
         disabled={exportingFile}
-        class="btn btn-soft"
+        class="btn btn-soft btn-circle"
         onclick={exportFile}>
         {#if exportingFile}
           <span class="loading"></span>
