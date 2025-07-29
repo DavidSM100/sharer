@@ -1,12 +1,18 @@
 <script lang="ts">
   import { readableSize, toPercent, exportFileToChat } from "../ts/utils";
-  import { DownloadIcon } from "@lucide/svelte";
+  import { DownloadIcon, PlayIcon } from "@lucide/svelte";
   import CircularProgressBar from "./CircularProgressBar.svelte";
   import type { FileData } from "../ts/types";
   import { viewerFileId } from "../ts/state.svelte";
 
   let { id, data }: { id: string; data: FileData } = $props();
   let exportingFile: boolean = $state(false);
+  let isMedia = $derived(
+    data.mimeType?.startsWith("image") ||
+      data.mimeType?.startsWith("audio") ||
+      data.mimeType?.startsWith("video") ||
+      false
+  );
 
   async function exportFile() {
     exportingFile = true;
@@ -20,43 +26,21 @@
       exportingFile = false;
     }
   }
-
-  function handleCardClick(event: MouseEvent) {
-    // Don't open viewer if user clicked on download button
-    if ((event.target! as HTMLDivElement).closest("button")) {
-      return;
-    }
-
-    if (data.name && data.totalParts) {
-      viewerFileId.id = id;
-    }
-  }
-
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      //@ts-ignore
-      handleCardClick(event);
-    }
-  }
 </script>
 
-<div
-  onclick={handleCardClick}
-  onkeydown={handleKeydown}
-  role="button"
-  tabindex="0"
-  class="card card-border file-card shadow-xl"
-  class:clickable={data.name && data.totalParts}>
-  <div class="download">
+<div class="border-base-300 flex items-center gap-2 border p-2 shadow">
+  <div>
     {#if data.receivedParts === data.totalParts}
-      {#if exportingFile}
-        <span class="loading"></span>
-      {:else}
-        <button class="btn" onclick={exportFile}>
+      <button
+        disabled={exportingFile}
+        class="btn btn-soft"
+        onclick={exportFile}>
+        {#if exportingFile}
+          <span class="loading"></span>
+        {:else}
           <DownloadIcon />
-        </button>
-      {/if}
+        {/if}
+      </button>
     {:else if data.totalParts}
       <CircularProgressBar
         progress={toPercent(data.receivedParts || 0, data.totalParts)}
@@ -64,62 +48,24 @@
     {/if}
   </div>
 
-  <div class="info">
-    {#if data.sender}
-      <div>
+  <div class="flex flex-col gap-1">
+    {#if data.sender && data.size}
+      <div class="flex justify-between">
         <b>{data.sender}</b>
+        <small><b>{readableSize(data.size)}</b></small>
       </div>
     {/if}
 
     {#if data.name}
       <div>{data.name}</div>
     {/if}
-
-    {#if data.size}
+    {#if isMedia}
       <div>
-        <small>{readableSize(data.size)}</small>
+        <button class="btn btn-soft" onclick={() => (viewerFileId.id = id)}>
+          View
+          <PlayIcon />
+        </button>
       </div>
     {/if}
   </div>
 </div>
-
-<style>
-  .file-card {
-    display: flex;
-    flex-direction: row;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    padding: 3px;
-    align-items: center;
-  }
-
-  .file-card.clickable {
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .file-card.clickable:hover {
-    background-color: #ddd;
-  }
-
-  .file-card.clickable:focus {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
-  }
-
-  .download {
-    margin-right: 3px;
-  }
-
-  .info div {
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .file-card.clickable:hover {
-      background-color: #444;
-    }
-  }
-</style>
