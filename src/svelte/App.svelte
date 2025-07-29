@@ -8,21 +8,21 @@
 </script>
 
 <main>
-  <div>
-    <button
-      class="btn btn-soft mb-2"
-      onclick={() => (showSendDiv.show = !showSendDiv.show)}>
-      {#if showSendDiv.show}
-        <ChevronUpIcon />
-      {:else}
-        <PlusIcon />
-      {/if}
-    </button>
-  </div>
-
   {#if viewerFileId.id}
     <FileViewer />
   {:else}
+    <div>
+      <button
+        class="btn btn-soft mb-2"
+        onclick={() => (showSendDiv.show = !showSendDiv.show)}>
+        {#if showSendDiv.show}
+          <ChevronUpIcon />
+        {:else}
+          <PlusIcon />
+        {/if}
+      </button>
+    </div>
+
     {#if showSendDiv.show}
       <Send />
     {/if}
