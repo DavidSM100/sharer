@@ -55,16 +55,15 @@
   </div>
 
   <div class="flex flex-col gap-1">
-    {#if data.sender && data.size}
-      <div class="flex justify-between">
-        <b>{data.sender}</b>
-        <small><b>{readableSize(data.size)}</b></small>
-      </div>
-    {/if}
+    <div class="flex justify-between">
+      <b>{data.sender || "Unknown sender"}</b>
+      <small
+        ><b>{(data.size && readableSize(data.size)) || "Unknown size"}</b
+        ></small>
+    </div>
 
-    {#if data.name}
-      <div>{data.name}</div>
-    {/if}
+    <div>{data.name || "Unknown file name"}</div>
+
     {#if isMedia}
       <div>
         <button class="btn btn-soft" onclick={() => (viewerFileId.id = id)}>
