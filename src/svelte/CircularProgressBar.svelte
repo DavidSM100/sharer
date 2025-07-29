@@ -3,9 +3,9 @@
 </script>
 
 <div
-  class="radial-progress"
-  style="--value: {progress};"
+  class="radial-progress bg-base-200 border-base-200 border-4"
+  style="--value: {progress}; --size: 3rem"
   role="progressbar"
   aria-valuenow={progress}>
-  {text}
+  <small>{text}</small>
 </div>
