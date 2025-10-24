@@ -54,7 +54,7 @@
     {/if}
   </div>
 
-  <div class="flex flex-col gap-1">
+  <div class="flex w-full flex-col gap-1">
     <div class="flex justify-between">
       <b>{data.sender || "Unknown sender"}</b>
       <small
