@@ -6,16 +6,14 @@ export { blobToBase64, splitString, readableSize, toPercent, getFileBase64 };
 async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.readAsDataURL(blob);
     reader.onload = () => {
-      if (typeof reader.result === "string")
-        resolve(reader.result.split(",")[1]);
+      //@ts-ignore
+      resolve(reader.result.split(",")[1]);
     };
     reader.onerror = (err) => {
-      console.log(err);
-      alert(err);
       reject(err);
     };
+    reader.readAsDataURL(blob);
   });
 }
 
