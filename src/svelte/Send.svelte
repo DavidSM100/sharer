@@ -77,7 +77,7 @@
   }
 </script>
 
-<main class="flex flex-col gap-2">
+<main class="mt-2 flex flex-col gap-2">
   <label class="select">
     <span class="label">Part Size</span>
     <select

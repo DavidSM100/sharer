@@ -13,7 +13,7 @@
   {:else}
     <div>
       <button
-        class="btn btn-soft mb-2"
+        class="btn btn-soft btn-square"
         onclick={() => (showSendDiv.show = !showSendDiv.show)}>
         {#if showSendDiv.show}
           <ChevronUpIcon />
