@@ -30,6 +30,9 @@ importers:
       '@tsconfig/svelte':
         specifier: ^5.0.5
         version: 5.0.5
+      '@types/node':
+        specifier: ^24.8.0
+        version: 24.8.0
       '@webxdc/types':
         specifier: ^2.1.2
         version: 2.1.2

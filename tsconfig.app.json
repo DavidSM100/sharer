@@ -4,6 +4,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
+    "types": ["svelte", "vite/client", "@webxdc/types/global"],
     "resolveJsonModule": true,
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.
@@ -16,5 +17,5 @@
     "isolatedModules": true,
     "moduleDetection": "force"
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "vite-env.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
 }
