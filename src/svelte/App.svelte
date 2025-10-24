@@ -1,10 +1,12 @@
 <script lang="ts">
   import { PlusIcon, ChevronUpIcon } from "@lucide/svelte";
   import Send from "./Send.svelte";
-  import { showSendDiv, viewerFileId } from "../ts/state.svelte";
+  import { viewerFileId } from "../ts/state.svelte";
   import FileViewer from "./FileViewer.svelte";
   import FileCard from "./FileCard.svelte";
   import { filesData } from "../ts/state.svelte";
+
+  let showSendDiv = $state(false);
 </script>
 
 <main>
@@ -14,8 +16,8 @@
     <div>
       <button
         class="btn btn-soft btn-square"
-        onclick={() => (showSendDiv.show = !showSendDiv.show)}>
-        {#if showSendDiv.show}
+        onclick={() => (showSendDiv = !showSendDiv)}>
+        {#if showSendDiv}
           <ChevronUpIcon />
         {:else}
           <PlusIcon />
@@ -23,7 +25,7 @@
       </button>
     </div>
 
-    {#if showSendDiv.show}
+    {#if showSendDiv}
       <Send />
     {/if}
     <div class="divider m-1"></div>
