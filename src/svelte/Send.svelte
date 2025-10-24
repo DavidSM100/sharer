@@ -78,7 +78,7 @@
 </script>
 
 <main class="mt-2 flex flex-col gap-2">
-  <label class="select">
+  <label class="select w-full">
     <span class="label">Part Size</span>
     <select
       bind:value={selectedPartSize}
@@ -93,7 +93,7 @@
     </select>
   </label>
 
-  <input class="file-input" type="file" bind:files={selectedFiles} />
+  <input class="file-input w-full" type="file" bind:files={selectedFiles} />
 
   <div>
     <button
