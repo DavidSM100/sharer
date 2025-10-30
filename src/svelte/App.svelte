@@ -13,27 +13,29 @@
   {#if viewerFileId.id}
     <FileViewer />
   {:else}
-    <div>
-      <button
-        class="btn btn-soft btn-square"
-        onclick={() => (showSendDiv = !showSendDiv)}>
-        {#if showSendDiv}
-          <ChevronUpIcon />
-        {:else}
-          <PlusIcon />
-        {/if}
-      </button>
-    </div>
+    <div class="p-2">
+      <div>
+        <button
+          class="btn btn-soft btn-square"
+          onclick={() => (showSendDiv = !showSendDiv)}>
+          {#if showSendDiv}
+            <ChevronUpIcon />
+          {:else}
+            <PlusIcon />
+          {/if}
+        </button>
+      </div>
 
-    {#if showSendDiv}
-      <Send />
-    {/if}
-    <div class="divider m-1"></div>
+      {#if showSendDiv}
+        <Send />
+      {/if}
+      <div class="divider m-1"></div>
 
-    <div class="flex flex-col gap-2">
-      {#each Object.entries(filesData) as [id, data]}
-        <FileCard {id} {data} />
-      {/each}
+      <div class="flex flex-col gap-2">
+        {#each Object.entries(filesData) as [id, data]}
+          <FileCard {id} {data} />
+        {/each}
+      </div>
     </div>
   {/if}
 </main>

@@ -1,7 +1,7 @@
 {
   "name": "sharer",
   "private": true,
-  "version": "2.2.5",
+  "version": "2.3.0",
   "type": "module",
   "scripts": {
     "serve": "vite --port 3000",

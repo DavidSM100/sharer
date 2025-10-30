@@ -64,7 +64,7 @@
 
     <div>{data.name || "Unknown file name"}</div>
 
-    {#if isMedia}
+    {#if isMedia && data.receivedParts === data.totalParts}
       <div>
         <button class="btn btn-soft" onclick={() => (viewerFileId.id = id)}>
           View
